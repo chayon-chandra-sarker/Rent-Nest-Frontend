@@ -3,26 +3,36 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginAction } from "../_actions/authAction";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
-const LoginFrom = () => {
+import {
+  registerAction,
+  type RegisterState,
+} from "../_actions/registerAction";
+
+const initialState: RegisterState = {
+  success: false,
+  message: "",
+  errors: {},
+};
+
+const RegisterFrom = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
   });
 
-  const [state, action, pending] = useActionState(loginAction, {
-    success: false,
-    message: "",
-    errors: {},
-  });
+  const [state, action, pending] = useActionState<
+    RegisterState,
+    FormData
+  >(registerAction, initialState);
 
   const router = useRouter();
 
@@ -30,19 +40,51 @@ const LoginFrom = () => {
     if (!state.message) return;
 
     if (state.success) {
-      toast.success(state.message || "Login successfully");
-      router.push("/admin-dashboard");
+      toast.success(state.message || "Registration successful");
+
+      router.push("/login");
     } else {
-      toast.error(state.message || "Login failed");
+      toast.error(state.message || "Registration failed");
     }
   }, [state, router]);
-
 
   return (
     <div>
       <form action={action} className="space-y-4">
+        {/* Name */}
+        <div className="space-y-2">
+          <Label
+            htmlFor="name"
+            className="text-xs font-semibold text-gray-700"
+          >
+            Full Name
+          </Label>
 
-        {/* Email Field */}
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            placeholder="Enter your full name"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                name: e.target.value,
+              })
+            }
+            className={`bg-gray-50 border-gray-300 focus-visible:ring-cyan-500 h-10 ${
+              state.errors?.name ? "border-red-500" : ""
+            }`}
+          />
+
+          {state.errors?.name && (
+            <p className="text-xs text-red-500">
+              {state.errors.name[0]}
+            </p>
+          )}
+        </div>
+
+        {/* Email */}
         <div className="space-y-2">
           <Label
             htmlFor="email"
@@ -68,7 +110,6 @@ const LoginFrom = () => {
             }`}
           />
 
-          {/* Email Error */}
           {state.errors?.email && (
             <p className="text-xs text-red-500">
               {state.errors.email[0]}
@@ -76,7 +117,7 @@ const LoginFrom = () => {
           )}
         </div>
 
-        {/* Password Field */}
+        {/* Password */}
         <div className="space-y-2">
           <Label
             htmlFor="password"
@@ -90,7 +131,7 @@ const LoginFrom = () => {
               id="password"
               name="password"
               type={showPassword ? "text" : "password"}
-              placeholder="Enter Your Password"
+              placeholder="Enter your password"
               value={formData.password}
               onChange={(e) =>
                 setFormData({
@@ -116,7 +157,6 @@ const LoginFrom = () => {
             </button>
           </div>
 
-          {/* Password Error */}
           {state.errors?.password && (
             <p className="text-xs text-red-500">
               {state.errors.password[0]}
@@ -124,18 +164,18 @@ const LoginFrom = () => {
           )}
         </div>
 
-        {/* Submit Button */}
+        {/* Submit */}
         <Button
           type="submit"
           disabled={pending}
           className="w-full rounded-full bg-[#00E5E5] text-gray-900 hover:bg-[#00D0D0] font-semibold h-11 transition-all mt-2"
         >
-          {pending ? "Submitting..." : "Login to Account"}
+          {pending ? "Creating Account..." : "Create Account"}
         </Button>
       </form>
     </div>
   );
 };
 
-export default LoginFrom;
+export default RegisterFrom;
 

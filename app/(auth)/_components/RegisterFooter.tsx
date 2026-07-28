@@ -1,24 +1,22 @@
 
-"use client";
-
 import Link from "next/link";
 
-const LoginFooter = () => {
+const RegisterFooter = () => {
   return (
     <div>
       {/* Footer */}
       <p className="pt-2 text-center text-xs text-gray-500">
-        Don&apos;t have an account?{" "}
+        Already have an account?{" "}
         <Link
-          href="/register"
+          href="/login"
           className="font-bold text-teal-600 hover:underline"
         >
-          Sign up
+          Login
         </Link>
       </p>
     </div>
   );
 };
 
-export default LoginFooter;
+export default RegisterFooter;
 
