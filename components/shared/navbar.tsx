@@ -87,7 +87,7 @@ export default function Navbar({ user }: NavbarProps) {
             className="flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium hover:bg-muted transition"
           >
             <User className="h-4 w-4" />
-            Profile
+          
             <ChevronDown
               className={`h-4 w-4 transition-transform ${
                 isProfileOpen ? "rotate-180" : ""
@@ -209,7 +209,7 @@ export default function Navbar({ user }: NavbarProps) {
             >
               <span className="flex items-center gap-2">
                 <User className="h-4 w-4" />
-                Profile
+  
               </span>
 
               <ChevronDown

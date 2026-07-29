@@ -31,7 +31,7 @@ const LoginFrom = () => {
 
     if (state.success) {
       toast.success(state.message || "Login successfully");
-      router.push("/admin-dashboard");
+      // router.push("/admin-dashboard");
     } else {
       toast.error(state.message || "Login failed");
     }

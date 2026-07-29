@@ -1,3 +1,11 @@
+API Integration Documentation
+Authentication API
+
+This document describes the API integration implemented in the RentNest frontend authentication system.
+
+Backend Base URL
+https://rent-nest-backend-fiy9.onrender.com
+
 # API Integration
 
 | Frontend Component | Method | Backend Endpoint                | Purpose                        |
