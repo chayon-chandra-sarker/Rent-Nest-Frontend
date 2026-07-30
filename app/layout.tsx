@@ -3,11 +3,11 @@ import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
-import Navbar from "@/components/shared/navbar";
 import { getMe } from "@/service/getMe";
+import { SiteHeader } from "@/components/shared/SiteHeader";
+import { SiteFooter } from "@/components/shared/SiteFooter";
 
-
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,13 +33,24 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
+      className={cn(
+        "h-full",
+        "antialiased",
+        geistSans.variable,
+        geistMono.variable,
+        "font-sans",
+        inter.variable,
+      )}
     >
-      <body className="min-h-full flex flex-col">
-        <Navbar user={user}></Navbar>
-        {children}
-        <Toaster position="top-right" richColors />
-        </body>
+      <body className="flex min-h-screen flex-col overflow-x-hidden">
+        <SiteHeader user={user} />
+
+        <main className="flex-1 w-full">{children}</main>
+
+        <Toaster position="top-right" richColors closeButton />
+
+        <SiteFooter />
+      </body>
     </html>
   );
 }
