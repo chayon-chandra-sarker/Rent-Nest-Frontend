@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { getMe } from "@/service/getMe";
 import { SiteHeader } from "@/components/shared/SiteHeader";
 import { SiteFooter } from "@/components/shared/SiteFooter";
+import QueryProvider from "@/providers/QueryProvider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -43,13 +44,12 @@ export default async function RootLayout({
       )}
     >
       <body className="flex min-h-screen flex-col overflow-x-hidden">
-        <SiteHeader user={user} />
-
-        <main className="flex-1 w-full">{children}</main>
-
-        <Toaster position="top-right" richColors closeButton />
-
-        <SiteFooter />
+        <QueryProvider>
+          <SiteHeader user={user} />
+          <main className="flex-1 w-full">{children}</main>
+          <Toaster position="top-right" richColors closeButton />
+          <SiteFooter />
+        </QueryProvider>
       </body>
     </html>
   );

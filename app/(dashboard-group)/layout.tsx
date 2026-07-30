@@ -1,17 +1,11 @@
-import React from 'react';
+import React from "react";
 
 const DashboardLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>
-
-) => {
-    return (
-        <div>
-              {children}
-        </div>
-    );
+}>) => {
+  return <div className="min-h-screen">{children}</div>;
 };
 
 export default DashboardLayout;
