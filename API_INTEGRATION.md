@@ -12,13 +12,15 @@ https://rent-nest-backend-fiy9.onrender.com
 
 # API Integration
 
-| Frontend Component             | Method | Backend Endpoint          | Purpose                                             |
-| ------------------------------ | ------ | ------------------------- | --------------------------------------------------- |
-| Login Form                     | POST   | `/api/auth/login`         | User login                                          |
-| Register Form                  | POST   | `/api/auth/register`      | User registration                                   |
-| Navbar / Auth                  | GET    | `/api/auth/me`            | Get logged-in user                                  |
-| Authentication / Refresh Token | POST   | `/api/auth/refresh-token` | Generate a new access token using the refresh token |
-| Admin Dashboard                | GET    | `/api/dashboard/admin`                         | Get admin dashboard statistics              |
-| Admin Users                    | GET    | `/api/user/admin/all-users`                    | Get all users for admin                     |
-| Admin User Role Change         | PUT    | `/api/user/admin/update-role/:id`              | Change user role by admin                   |
-| Admin User Block / Unblock     | PUT    | `/api/user/admin/update/:id`                   | Block or unblock user by admin              |
+| Frontend Component             | Method | Backend Endpoint                  | Purpose                                             |
+| ------------------------------ | ------ | --------------------------------- | --------------------------------------------------- |
+| Login Form                     | POST   | `/api/auth/login`                 | User login                                          |
+| Register Form                  | POST   | `/api/auth/register`              | User registration                                   |
+| Navbar / Auth                  | GET    | `/api/auth/me`                    | Get logged-in user                                  |
+| Authentication / Refresh Token | POST   | `/api/auth/refresh-token`         | Generate a new access token using the refresh token |
+| Admin Dashboard                | GET    | `/api/dashboard/admin`            | Get admin dashboard statistics                      |
+| Admin Users                    | GET    | `/api/user/admin/all-users`       | Get all users for admin                             |
+| Admin User Role Change         | PUT    | `/api/user/admin/update/role/:id` | Change user role by admin                           |
+| Admin User Block / Unblock     | PUT    | `/api/user/admin/update/:id`      | Block or unblock user by admin                      |
+| Admin User Management          | GET    | `/api/user/admin/all-users`       | Get all users for admin                             |
+| Admin Dashboard Statistics     | GET    | `/api/dashboard/admin`            | Get admin dashboard statistics                      |

@@ -1,10 +1,11 @@
-
+import Image from "next/image";
 import {
   Mail,
   ShieldCheck,
   UserCheck,
   UserX,
 } from "lucide-react";
+
 import UserRoleSelect from "./UserRoleSelect";
 import UserStatusButton from "./UserStatusButton";
 
@@ -14,6 +15,7 @@ type User = {
   email?: string;
   role?: string;
   status?: string;
+  image?: string | null;
 };
 
 interface UserCardProps {
@@ -35,15 +37,26 @@ const UserCard = ({ user }: UserCardProps) => {
 
       {/* User Header */}
       <div className="p-5">
-
         <div className="flex items-start justify-between gap-4">
 
           {/* Avatar + User Info */}
           <div className="flex min-w-0 items-center gap-3">
 
             {/* Avatar */}
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-lg font-bold text-cyan-700 dark:bg-cyan-500/20 dark:text-cyan-300">
-              {initial}
+            <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-full bg-cyan-100 text-lg font-bold text-cyan-700 dark:bg-cyan-500/20 dark:text-cyan-300">
+
+              {user.image ? (
+                <Image
+                  src={user.image}
+                  alt={user.name || "User profile"}
+                  width={48}
+                  height={48}
+                  className="size-full object-cover"
+                />
+              ) : (
+                initial
+              )}
+
             </div>
 
             {/* Name + Email */}
@@ -138,7 +151,6 @@ const UserCard = ({ user }: UserCardProps) => {
             </div>
 
           </div>
-
         </div>
       </div>
 

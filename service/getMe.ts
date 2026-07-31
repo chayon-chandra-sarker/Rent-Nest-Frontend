@@ -4,7 +4,9 @@ import { cookies } from "next/headers";
 
 export const getMe = async () => {
   const cookieStore = await cookies();
+
   const accessToken = cookieStore.get("accessToken")?.value || null;
+
   if (!accessToken) {
     return {
       success: false,
@@ -12,21 +14,27 @@ export const getMe = async () => {
       data: null,
     };
   }
+
   const res = await fetch(
     "https://rent-nest-backend-fiy9.onrender.com/api/user/me",
     {
+      method: "GET",
       headers: {
-        // Authorization:`${accessToken}`,
-        cookie: `accessToken=${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
-     cache: "force-cache",
-      next: {
-        revalidate: 60 * 60 * 24,
-        tags:["my-profile"]
-      },
-    },
+      cache: "no-store",
+    }
   );
 
-  const result = res.json();
+  if (!res.ok) {
+    return {
+      success: false,
+      message: "Failed to fetch user profile",
+      data: null,
+    };
+  }
+
+  const result = await res.json();
+
   return result;
 };
