@@ -1,17 +1,10 @@
-export interface AdminDashboardStats {
-  totalUsers: number;
-  totalProperties: number;
-  totalRentalRequests: number;
-  totalRevenue: string;
-  completedPayments: number;
-}
 
-export interface AdminDashboardResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: AdminDashboardStats;
-}
+import type {
+  AdminDashboardStats,
+  AdminDashboardResponse,
+  AdminUser,
+  GetAllUsersResponse,
+} from "@/types/admin.types";
 
 export const getAdminDashboardStats =
   async (): Promise<AdminDashboardStats> => {
@@ -20,9 +13,7 @@ export const getAdminDashboardStats =
     });
 
     if (!response.ok) {
-      throw new Error(
-        "Failed to fetch admin dashboard statistics"
-      );
+      throw new Error("Failed to fetch admin dashboard statistics");
     }
 
     const result: AdminDashboardResponse =
@@ -30,3 +21,19 @@ export const getAdminDashboardStats =
 
     return result.data;
   };
+
+export const getAllUsers = async (): Promise<AdminUser[]> => {
+  const response = await fetch("/api/admin/users", {
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch users");
+  }
+
+  const result: GetAllUsersResponse =
+    await response.json();
+
+  return result.data;
+};
+
