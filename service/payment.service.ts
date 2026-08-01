@@ -1,3 +1,5 @@
+
+
 export interface PaymentTenant {
   id: string;
   name: string;
@@ -18,9 +20,12 @@ export interface Payment {
   status: string;
   paidAt: string;
   createdAt: string;
+
   tenant: PaymentTenant;
+
   property: PaymentProperty;
 }
+
 
 interface PaymentsResponse {
   success: boolean;
@@ -28,6 +33,7 @@ interface PaymentsResponse {
   message: string;
   data: Payment[];
 }
+
 
 export const getAllPayments = async (): Promise<Payment[]> => {
   const response = await fetch("/api/admin/payments", {
@@ -46,3 +52,42 @@ export const getAllPayments = async (): Promise<Payment[]> => {
 
   return result.data;
 };
+
+
+
+export interface MyPayment {
+  amount: string;
+  currency: string;
+  status: string;
+  paidAt: string;
+  transactionId: string;
+  propertyTitle: string;
+}
+
+
+interface MyPaymentsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: MyPayment[];
+}
+
+export const getMyPayments = async (): Promise<MyPayment[]> => {
+  const response = await fetch("/api/payments/my", {
+    method: "GET",
+    credentials: "include",
+    cache: "no-store",
+  });
+
+  const result: MyPaymentsResponse =
+    await response.json();
+
+  if (!response.ok || !result.success) {
+    throw new Error(
+      result.message || "Failed to fetch my payments"
+    );
+  }
+
+  return result.data;
+};
+

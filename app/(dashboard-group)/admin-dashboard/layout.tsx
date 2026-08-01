@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -16,6 +15,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
+import { logOut } from "@/service/logOut";
 
 const menuItems = [
   {
@@ -48,11 +48,11 @@ const menuItems = [
     href: "/admin-dashboard/payments",
     icon: CreditCard,
   },
-  {
-    label: "Settings",
-    href: "/admin-dashboard/settings",
-    icon: Settings,
-  },
+  // {
+  //   label: "Settings",
+  //   href: "/admin-dashboard/settings",
+  //   icon: Settings,
+  // },
 ];
 
 const DashboardLayout = ({
@@ -62,17 +62,14 @@ const DashboardLayout = ({
 }>) => {
   const pathname = usePathname();
 
-  const [isMobileMenuOpen, setIsMobileMenuOpen] =
-    useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="flex min-h-screen">
-
         {/* ================= DESKTOP SIDEBAR ================= */}
         <aside className="hidden w-64 shrink-0 border-r bg-white dark:border-slate-800 dark:bg-slate-900 md:block">
           <div className="flex h-full flex-col">
-
             {/* Logo */}
             <div className="flex h-16 items-center border-b px-6 dark:border-slate-800">
               <Link
@@ -88,8 +85,7 @@ const DashboardLayout = ({
               {menuItems.map((item) => {
                 const Icon = item.icon;
 
-                const isActive =
-                  pathname === item.href;
+                const isActive = pathname === item.href;
 
                 return (
                   <Link
@@ -111,6 +107,7 @@ const DashboardLayout = ({
             {/* Logout */}
             <div className="border-t p-4 dark:border-slate-800">
               <button
+                onClick={logOut}
                 type="button"
                 className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-950"
               >
@@ -132,21 +129,15 @@ const DashboardLayout = ({
         {/* ================= MOBILE SIDEBAR ================= */}
         <aside
           className={`fixed inset-y-0 left-0 z-50 w-72 transform border-r bg-white shadow-xl transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 md:hidden ${
-            isMobileMenuOpen
-              ? "translate-x-0"
-              : "-translate-x-full"
+            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           <div className="flex h-full flex-col">
-
             {/* Mobile Logo */}
             <div className="flex h-16 items-center justify-between border-b px-5 dark:border-slate-800">
-
               <Link
                 href="/admin-dashboard"
-                onClick={() =>
-                  setIsMobileMenuOpen(false)
-                }
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="text-lg font-bold text-cyan-500"
               >
                 Admin Dashboard
@@ -155,14 +146,11 @@ const DashboardLayout = ({
               {/* Close Button */}
               <button
                 type="button"
-                onClick={() =>
-                  setIsMobileMenuOpen(false)
-                }
+                onClick={() => setIsMobileMenuOpen(false)}
                 className="flex size-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
               >
                 <X size={20} />
               </button>
-
             </div>
 
             {/* Mobile Navigation */}
@@ -170,16 +158,13 @@ const DashboardLayout = ({
               {menuItems.map((item) => {
                 const Icon = item.icon;
 
-                const isActive =
-                  pathname === item.href;
+                const isActive = pathname === item.href;
 
                 return (
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() =>
-                      setIsMobileMenuOpen(false)
-                    }
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition ${
                       isActive
                         ? "bg-cyan-500 text-white shadow-sm"
@@ -203,21 +188,16 @@ const DashboardLayout = ({
                 Logout
               </button>
             </div>
-
           </div>
         </aside>
 
         {/* ================= MAIN CONTENT ================= */}
         <main className="min-w-0 flex-1">
-
           {/* Mobile Top Bar */}
           <div className="sticky top-0 z-30 flex h-14 items-center border-b bg-white px-4 dark:border-slate-800 dark:bg-slate-900 md:hidden">
-
             <button
               type="button"
-              onClick={() =>
-                setIsMobileMenuOpen(true)
-              }
+              onClick={() => setIsMobileMenuOpen(true)}
               className="flex size-10 items-center justify-center rounded-lg text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
               aria-label="Open menu"
             >
@@ -227,12 +207,10 @@ const DashboardLayout = ({
             <h1 className="ml-3 text-base font-bold text-slate-900 dark:text-white">
               Admin Dashboard
             </h1>
-
           </div>
 
           {children}
         </main>
-
       </div>
     </div>
   );

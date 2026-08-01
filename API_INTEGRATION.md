@@ -24,10 +24,9 @@ https://rent-nest-backend-fiy9.onrender.com
 | Admin User Block / Unblock     | PUT    | `/api/user/admin/update/:id`      | Block or unblock user by admin                      |
 | Admin User Management          | GET    | `/api/user/admin/all-users`       | Get all users for admin                             |
 | Admin Dashboard Statistics     | GET    | `/api/dashboard/admin`            | Get admin dashboard statistics                      |
-| Admin Dashboard Statistics | GET | /api/dashboard/admin | Get admin dashboard statistics |
-| Admin View All Users | GET | /api/user/admin/all-users | Get all tenants and landlords |
-| Admin User Role Change | PUT | /api/user/admin/update/role/:id | Change user role by admin |
-| Admin User Block / Unblock | PUT | /api/user/admin/update/:id | Block or unblock user by admin |
-| Admin View All Rental Requests | GET | /api/rental/admin/rentals | Get all rental requests |
-| Admin View All Payments | GET | /api/payment/all-payments | Get all rental payments |
-| Admin View All Categories | GET | /api/category/all-categories | Get all property categories |
+| Admin View All Users | GET | `/api/user/admin/all-users` | Get all tenants and landlords |
+| Admin User Role Change | PUT | `/api/user/admin/update/role/:id` | Change user role by admin |
+| Admin User Block / Unblock | PUT | `/api/user/admin/update/:id` | Block or unblock user by admin |
+| Admin View All Rental Requests | GET | `/api/rental/admin/rentals` | Get all rental requests |
+| Admin View All Payments | GET | `/api/payment/all-payments` | Get all rental payments |
+| Admin View All Categories | GET | `/api/category/all-categories` | Get all property categories |
