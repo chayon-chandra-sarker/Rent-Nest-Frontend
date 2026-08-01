@@ -2,9 +2,9 @@
 "use client";
 
 import {
+  CheckCircle2,
   CreditCard,
   FileText,
-  Home,
   Loader2,
 } from "lucide-react";
 
@@ -23,15 +23,15 @@ const TenantStats = ({
   approvedRequests,
   totalPaymentAmount,
 }: TenantStatsProps) => {
-  const formatAmount = (amount: number) => {
-    return amount.toLocaleString("en-BD");
-  };
-
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
-      {/* My Rentals */}
+      {/* =========================
+          MY RENTALS
+      ========================= */}
+
       <div className="group rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-md">
+
         <div className="flex items-center justify-between">
 
           <div>
@@ -39,17 +39,19 @@ const TenantStats = ({
               My Rentals
             </p>
 
-            <h2 className="mt-2 text-2xl font-bold">
+            <div className="mt-2 flex min-h-8 items-center">
               {rentalLoading ? (
                 <Loader2 className="size-6 animate-spin text-primary" />
               ) : (
-                approvedRequests
+                <h2 className="text-2xl font-bold">
+                  {approvedRequests}
+                </h2>
               )}
-            </h2>
+            </div>
           </div>
 
           <div className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
-            <Home className="size-5" />
+            <CheckCircle2 className="size-5" />
           </div>
 
         </div>
@@ -57,10 +59,15 @@ const TenantStats = ({
         <p className="mt-3 text-xs text-muted-foreground">
           Approved rental requests
         </p>
+
       </div>
 
-      {/* Rental Requests */}
+      {/* =========================
+          RENTAL REQUESTS
+      ========================= */}
+
       <div className="group rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:shadow-md">
+
         <div className="flex items-center justify-between">
 
           <div>
@@ -68,13 +75,15 @@ const TenantStats = ({
               Rental Requests
             </p>
 
-            <h2 className="mt-2 text-2xl font-bold">
+            <div className="mt-2 flex min-h-8 items-center">
               {rentalLoading ? (
-                <Loader2 className="size-6 animate-spin text-primary" />
+                <Loader2 className="size-6 animate-spin text-blue-500" />
               ) : (
-                totalRequests
+                <h2 className="text-2xl font-bold">
+                  {totalRequests}
+                </h2>
               )}
-            </h2>
+            </div>
           </div>
 
           <div className="flex size-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500 transition-transform duration-300 group-hover:scale-110">
@@ -86,24 +95,31 @@ const TenantStats = ({
         <p className="mt-3 text-xs text-muted-foreground">
           Total rental requests
         </p>
+
       </div>
 
-      {/* Payments */}
+      {/* =========================
+          TOTAL PAID
+      ========================= */}
+
       <div className="group rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/20 hover:shadow-md">
+
         <div className="flex items-center justify-between">
 
           <div>
             <p className="text-sm text-muted-foreground">
-              Payments
+              Total Paid
             </p>
 
-            <h2 className="mt-2 text-2xl font-bold">
+            <div className="mt-2 flex min-h-8 items-center">
               {paymentLoading ? (
                 <Loader2 className="size-6 animate-spin text-emerald-500" />
               ) : (
-                `৳${formatAmount(totalPaymentAmount)}`
+                <h2 className="text-2xl font-bold">
+                  ৳{totalPaymentAmount.toLocaleString()}
+                </h2>
               )}
-            </h2>
+            </div>
           </div>
 
           <div className="flex size-11 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 transition-transform duration-300 group-hover:scale-110">
@@ -115,6 +131,7 @@ const TenantStats = ({
         <p className="mt-3 text-xs text-muted-foreground">
           Total completed payments
         </p>
+
       </div>
 
     </div>

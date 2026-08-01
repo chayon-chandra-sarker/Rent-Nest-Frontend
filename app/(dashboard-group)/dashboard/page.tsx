@@ -19,12 +19,11 @@ import RecentRentals from "@/app/(dashboard-group)/_components/tenant/RecentRent
 import RecentPayments from "@/app/(dashboard-group)/_components/tenant/RecentPayments";
 
 const UserDashboard = () => {
+  const [rentalRequests, setRentalRequests] = useState<
+    MyRentalRequest[]
+  >([]);
 
-  const [rentalRequests, setRentalRequests] =
-    useState<MyRentalRequest[]>([]);
-
-  const [payments, setPayments] =
-    useState<MyPayment[]>([]);
+  const [payments, setPayments] = useState<MyPayment[]>([]);
 
   const [rentalLoading, setRentalLoading] =
     useState(true);
@@ -33,7 +32,7 @@ const UserDashboard = () => {
     useState(true);
 
   // =========================
-  // RENTAL REQUESTS
+  // FETCH RENTAL REQUESTS
   // =========================
 
   useEffect(() => {
@@ -56,7 +55,7 @@ const UserDashboard = () => {
   }, []);
 
   // =========================
-  // PAYMENTS
+  // FETCH PAYMENTS
   // =========================
 
   useEffect(() => {
@@ -99,10 +98,16 @@ const UserDashboard = () => {
       0
     );
 
+  // =========================
+  // UI
+  // =========================
+
   return (
     <div className="space-y-6">
 
-      {/* Header */}
+      {/* =========================
+          HEADER
+      ========================= */}
 
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
@@ -115,7 +120,9 @@ const UserDashboard = () => {
         </p>
       </div>
 
-      {/* Stats */}
+      {/* =========================
+          STATS
+      ========================= */}
 
       <TenantStats
         rentalLoading={rentalLoading}
@@ -125,11 +132,15 @@ const UserDashboard = () => {
         totalPaymentAmount={totalPaymentAmount}
       />
 
-      {/* Quick Actions */}
+      {/* =========================
+          QUICK ACTIONS
+      ========================= */}
 
       <QuickActions />
 
-      {/* Recent Activity */}
+      {/* =========================
+          RECENT ACTIVITY
+      ========================= */}
 
       <div className="grid gap-6 lg:grid-cols-2">
 

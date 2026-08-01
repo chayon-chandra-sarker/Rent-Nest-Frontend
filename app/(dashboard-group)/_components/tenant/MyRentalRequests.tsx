@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -8,6 +9,8 @@ import {
   Clock3,
   MapPin,
   XCircle,
+  Banknote,
+  CircleCheck,
 } from "lucide-react";
 
 import {
@@ -19,6 +22,7 @@ const MyRentalRequests = () => {
   const [rentals, setRentals] = useState<MyRentalRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
 
   useEffect(() => {
     const fetchRentals = async () => {
@@ -45,9 +49,6 @@ const MyRentalRequests = () => {
     fetchRentals();
   }, []);
 
-  // =========================
-  // STATUS CONFIG
-  // =========================
 
   const getStatusConfig = (status: string) => {
     switch (status?.toUpperCase()) {
@@ -77,28 +78,25 @@ const MyRentalRequests = () => {
     }
   };
 
-  // =========================
-  // DATE FORMAT
-  // =========================
 
-  const formatDate = (date: string | null) => {
+  const formatDateTime = (date: string | null) => {
     if (!date) return "Not approved yet";
 
-    return new Date(date).toLocaleDateString("en-US", {
+    return new Date(date).toLocaleString("en-US", {
+      timeZone: "Asia/Dhaka",
       year: "numeric",
       month: "short",
       day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
-  // =========================
-  // LOADING
-  // =========================
 
   if (loading) {
     return (
       <section className="rounded-3xl border border-border/60 bg-card p-10 shadow-sm">
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex min-h-[350px] flex-col items-center justify-center">
           <div className="size-9 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
 
           <p className="mt-4 text-sm font-medium text-muted-foreground">
@@ -109,14 +107,11 @@ const MyRentalRequests = () => {
     );
   }
 
-  // =========================
-  // ERROR
-  // =========================
 
   if (error) {
     return (
       <section className="rounded-3xl border border-destructive/20 bg-card p-10 shadow-sm">
-        <div className="mx-auto flex max-w-md flex-col items-center text-center">
+        <div className="mx-auto flex min-h-[300px] max-w-md flex-col items-center justify-center text-center">
           <div className="flex size-14 items-center justify-center rounded-2xl bg-destructive/10">
             <XCircle className="size-7 text-destructive" />
           </div>
@@ -132,10 +127,6 @@ const MyRentalRequests = () => {
       </section>
     );
   }
-
-  // =========================
-  // EMPTY
-  // =========================
 
   if (rentals.length === 0) {
     return (
@@ -155,62 +146,59 @@ const MyRentalRequests = () => {
     );
   }
 
-  // =========================
-  // MAIN UI
-  // =========================
-
   return (
-    <section className="space-y-5">
-      {/* Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+    <section className="space-y-6">
+
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+          <h1 className="text-2xl font-bold tracking-tight">
             My Rental Requests
           </h1>
 
           <p className="mt-1 text-sm text-muted-foreground">
-            Track the status of your rental requests.
+            Track your rental requests and their current status.
           </p>
         </div>
 
-        <div className="w-fit rounded-xl border border-primary/10 bg-primary/5 px-4 py-2">
+        <div className="w-fit rounded-xl border border-primary/10 bg-primary/5 px-4 py-2.5">
           <p className="text-xs text-muted-foreground">
             Total Requests
           </p>
 
-          <p className="text-lg font-bold text-primary">
+          <p className="text-xl font-bold text-primary">
             {rentals.length}
           </p>
         </div>
       </div>
 
-      {/* Rental Cards */}
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-5 xl:grid-cols-2">
         {rentals.map((rental) => {
           const status = getStatusConfig(rental.status);
 
           return (
             <article
               key={rental.id}
-              className="overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+              className="group overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg"
             >
-              {/* Card Header */}
-              <div className="border-b border-border/60 p-5">
+    
+              <div className="border-b border-border/60 p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-4">
+                  {/* Property Info */}
+
                   <div className="flex min-w-0 items-start gap-3">
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                      <Building2 className="size-5" />
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-105">
+                      <Building2 className="size-6" />
                     </div>
 
                     <div className="min-w-0">
-                      <h2 className="truncate text-base font-bold">
+                      <h2 className="truncate text-base font-bold sm:text-lg">
                         {rental.property.title}
                       </h2>
 
-                      <div className="mt-1.5 flex items-center gap-1.5">
-                        <MapPin className="size-3.5 shrink-0 text-primary" />
+                      <div className="mt-2 flex items-center gap-1.5">
+                        <MapPin className="size-4 shrink-0 text-primary" />
 
-                        <span className="truncate text-xs text-muted-foreground">
+                        <span className="truncate text-sm text-muted-foreground">
                           {rental.property.location}
                         </span>
                       </div>
@@ -218,8 +206,9 @@ const MyRentalRequests = () => {
                   </div>
 
                   {/* Status */}
+
                   <span
-                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-2.5 py-1.5 text-xs font-bold ${status.className}`}
+                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold ${status.className}`}
                   >
                     {status.icon}
 
@@ -228,71 +217,97 @@ const MyRentalRequests = () => {
                 </div>
               </div>
 
-              {/* Card Body */}
-              <div className="space-y-4 p-5">
-                {/* Price */}
-                <div className="rounded-xl border border-border/60 bg-muted/20 p-4">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Monthly Rent
-                  </p>
+              <div className="space-y-5 p-5 sm:p-6">
 
-                  <p className="mt-1 text-xl font-extrabold text-primary">
-                    ৳{Number(
-                      rental.property.price
-                    ).toLocaleString()}
-                  </p>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {/* Monthly Rent */}
+
+                  <div className="rounded-2xl border border-border/60 bg-muted/20 p-4">
+                    <div className="flex items-center gap-2">
+                      <Banknote className="size-4 text-primary" />
+
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        Monthly Rent
+                      </p>
+                    </div>
+
+                    <p className="mt-2 text-xl font-extrabold text-primary">
+                      ৳
+                      {Number(
+                        rental.property.price
+                      ).toLocaleString()}
+                    </p>
+                  </div>
+
+                  {/* Property Availability */}
+
+                  <div className="rounded-2xl border border-border/60 bg-muted/20 p-4">
+                    <div className="flex items-center gap-2">
+                      <CircleCheck className="size-4 text-primary" />
+
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        Property Status
+                      </p>
+                    </div>
+
+                    <p
+                      className={`mt-2 text-sm font-bold ${
+                        rental.property.isAvailable
+                          ? "text-emerald-600 dark:text-emerald-400"
+                          : "text-red-600 dark:text-red-400"
+                      }`}
+                    >
+                      {rental.property.isAvailable
+                        ? "Available"
+                        : "Currently Rented"}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Dates */}
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {/* Requested */}
-                  <div className="rounded-xl border border-border/60 p-3.5">
+                  {/* Requested At */}
+
+                  <div className="rounded-2xl border border-border/60 p-4">
                     <div className="flex items-center gap-2">
                       <CalendarDays className="size-4 text-primary" />
 
                       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        Requested
+                        Requested At
                       </p>
                     </div>
 
-                    <p className="mt-2 text-sm font-semibold">
-                      {formatDate(rental.requestedAt)}
+                    <p className="mt-2 text-sm font-semibold leading-6">
+                      {formatDateTime(rental.requestedAt)}
                     </p>
                   </div>
 
-                  {/* Approved */}
-                  <div className="rounded-xl border border-border/60 p-3.5">
+                  {/* Approved At */}
+
+                  <div className="rounded-2xl border border-border/60 p-4">
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="size-4 text-emerald-500" />
 
                       <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        Approved
+                        Approved At
                       </p>
                     </div>
 
-                    <p className="mt-2 text-sm font-semibold">
-                      {formatDate(rental.approvedAt)}
+                    <p className="mt-2 text-sm font-semibold leading-6">
+                      {formatDateTime(rental.approvedAt)}
                     </p>
                   </div>
                 </div>
 
-                {/* Availability */}
-                <div className="flex items-center justify-between rounded-xl bg-muted/30 px-4 py-3">
-                  <span className="text-xs font-medium text-muted-foreground">
-                    Property Status
-                  </span>
+                <div className="rounded-2xl bg-muted/30 px-4 py-3">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                    <span className="text-xs font-medium text-muted-foreground">
+                      Request ID
+                    </span>
 
-                  <span
-                    className={`text-xs font-bold ${
-                      rental.property.isAvailable
-                        ? "text-emerald-600 dark:text-emerald-400"
-                        : "text-red-600 dark:text-red-400"
-                    }`}
-                  >
-                    {rental.property.isAvailable
-                      ? "Available"
-                      : "Currently Rented"}
-                  </span>
+                    <span className="break-all text-xs font-medium text-foreground/70 sm:text-right">
+                      {rental.id}
+                    </span>
+                  </div>
                 </div>
               </div>
             </article>
@@ -304,3 +319,4 @@ const MyRentalRequests = () => {
 };
 
 export default MyRentalRequests;
+
