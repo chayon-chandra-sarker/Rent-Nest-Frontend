@@ -4,7 +4,12 @@ export interface MyRentalRequest {
   id: string;
   propertyId: string;
   tenantId: string;
-  status: "PENDING" | "APPROVED" | "REJECTED";
+  status:
+  | "PENDING"
+  | "APPROVED"
+  | "REJECTED"
+  | "ACTIVE"
+  | "COMPLETED";
   requestedAt: string;
   approvedAt: string | null;
 

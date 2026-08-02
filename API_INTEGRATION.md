@@ -30,3 +30,14 @@ https://rent-nest-backend-fiy9.onrender.com
 | Admin View All Rental Requests | GET | `/api/rental/admin/rentals` | Get all rental requests |
 | Admin View All Payments | GET | `/api/payment/all-payments` | Get all rental payments |
 | Admin View All Categories | GET | `/api/category/all-categories` | Get all property categories |
+| Landlord View My Properties | GET | `/api/property/my-properties` | Get all properties created by the logged-in landlord |
+| Landlord Create Property | POST | `/api/property/create-property` | Create a new rental property |
+| Landlord View Single Property | GET | `/api/property/:id` | Get details of a specific property |
+| Landlord Update Property | PUT | `/api/property/:id` | Update an existing property |
+| Landlord Delete Property | DELETE | `/api/property/:id` | Delete a property |
+| Landlord View Rental Requests | GET | `/api/rental/landlord-requests` | Get rental requests received for landlord properties |
+| Landlord Update Rental Request | PUT | `/api/rental/:id/status` | Approve or reject a rental request |
+| Landlord View Payments | GET | `/api/payment/landlord-payments` | Get payments related to landlord properties |
+| Landlord View Dashboard Stats | GET | `/api/dashboard/landlord` | Get landlord dashboard statistics |
+| Landlord View Profile | GET | `/api/user/profile` | Get logged-in landlord profile |
+| Landlord Update Profile | PUT | `/api/user/profile` | Update landlord profile information |

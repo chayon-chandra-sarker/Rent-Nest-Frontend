@@ -1,7 +1,5 @@
-
 "use client";
 
-import { useEffect, useState } from "react";
 import {
   Building2,
   CalendarDays,
@@ -11,7 +9,12 @@ import {
   XCircle,
   Banknote,
   CircleCheck,
+  Loader2,
+  Activity,
+  BadgeCheck,
 } from "lucide-react";
+
+import { useQuery } from "@tanstack/react-query";
 
 import {
   getMyRentalRequests,
@@ -19,36 +22,16 @@ import {
 } from "@/service/rental.service";
 
 const MyRentalRequests = () => {
-  const [rentals, setRentals] = useState<MyRentalRequest[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
 
-
-  useEffect(() => {
-    const fetchRentals = async () => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const data = await getMyRentalRequests();
-
-        setRentals(data);
-      } catch (error) {
-        console.error("Fetch my rental requests error:", error);
-
-        setError(
-          error instanceof Error
-            ? error.message
-            : "Failed to fetch rental requests"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRentals();
-  }, []);
-
+  const {
+    data: rentals = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery<MyRentalRequest[]>({
+    queryKey: ["my-rental-requests"],
+    queryFn: getMyRentalRequests,
+  });
 
   const getStatusConfig = (status: string) => {
     switch (status?.toUpperCase()) {
@@ -68,6 +51,23 @@ const MyRentalRequests = () => {
           icon: <XCircle className="size-4" />,
         };
 
+      case "ACTIVE":
+        return {
+          label: "Active",
+          className:
+            "border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400",
+          icon: <Activity className="size-4" />,
+        };
+
+      case "COMPLETED":
+        return {
+          label: "Completed",
+          className:
+            "border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400",
+          icon: <BadgeCheck className="size-4" />,
+        };
+
+      case "PENDING":
       default:
         return {
           label: "Pending",
@@ -77,7 +77,6 @@ const MyRentalRequests = () => {
         };
     }
   };
-
 
   const formatDateTime = (date: string | null) => {
     if (!date) return "Not approved yet";
@@ -92,12 +91,11 @@ const MyRentalRequests = () => {
     });
   };
 
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="rounded-3xl border border-border/60 bg-card p-10 shadow-sm">
         <div className="flex min-h-[350px] flex-col items-center justify-center">
-          <div className="size-9 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
+          <Loader2 className="size-9 animate-spin text-primary" />
 
           <p className="mt-4 text-sm font-medium text-muted-foreground">
             Loading your rental requests...
@@ -107,8 +105,7 @@ const MyRentalRequests = () => {
     );
   }
 
-
-  if (error) {
+  if (isError) {
     return (
       <section className="rounded-3xl border border-destructive/20 bg-card p-10 shadow-sm">
         <div className="mx-auto flex min-h-[300px] max-w-md flex-col items-center justify-center text-center">
@@ -121,7 +118,9 @@ const MyRentalRequests = () => {
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            {error}
+            {error instanceof Error
+              ? error.message
+              : "Failed to fetch rental requests"}
           </p>
         </div>
       </section>
@@ -180,10 +179,9 @@ const MyRentalRequests = () => {
               key={rental.id}
               className="group overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg"
             >
-    
               <div className="border-b border-border/60 p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-4">
-                  {/* Property Info */}
+                  {/* Property */}
 
                   <div className="flex min-w-0 items-start gap-3">
                     <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-105">
@@ -218,7 +216,7 @@ const MyRentalRequests = () => {
               </div>
 
               <div className="space-y-5 p-5 sm:p-6">
-
+          
                 <div className="grid gap-3 sm:grid-cols-2">
                   {/* Monthly Rent */}
 
@@ -237,9 +235,13 @@ const MyRentalRequests = () => {
                         rental.property.price
                       ).toLocaleString()}
                     </p>
+
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      per month
+                    </p>
                   </div>
 
-                  {/* Property Availability */}
+                  {/* Property Status */}
 
                   <div className="rounded-2xl border border-border/60 bg-muted/20 p-4">
                     <div className="flex items-center gap-2">
@@ -277,7 +279,9 @@ const MyRentalRequests = () => {
                     </div>
 
                     <p className="mt-2 text-sm font-semibold leading-6">
-                      {formatDateTime(rental.requestedAt)}
+                      {formatDateTime(
+                        rental.requestedAt
+                      )}
                     </p>
                   </div>
 
@@ -293,10 +297,57 @@ const MyRentalRequests = () => {
                     </div>
 
                     <p className="mt-2 text-sm font-semibold leading-6">
-                      {formatDateTime(rental.approvedAt)}
+                      {formatDateTime(
+                        rental.approvedAt
+                      )}
                     </p>
                   </div>
                 </div>
+
+                {rental.status === "PENDING" && (
+                  <div className="rounded-2xl bg-amber-500/10 px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-amber-600 dark:text-amber-400">
+                      <Clock3 className="size-4" />
+                      Waiting for landlord approval.
+                    </div>
+                  </div>
+                )}
+
+                {rental.status === "APPROVED" && (
+                  <div className="rounded-2xl bg-emerald-500/10 px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 className="size-4" />
+                      Your rental request has been approved.
+                    </div>
+                  </div>
+                )}
+
+                {rental.status === "REJECTED" && (
+                  <div className="rounded-2xl bg-red-500/10 px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-red-600 dark:text-red-400">
+                      <XCircle className="size-4" />
+                      Your rental request was rejected.
+                    </div>
+                  </div>
+                )}
+
+                {rental.status === "ACTIVE" && (
+                  <div className="rounded-2xl bg-blue-500/10 px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-blue-600 dark:text-blue-400">
+                      <Activity className="size-4" />
+                      Your rental is currently active.
+                    </div>
+                  </div>
+                )}
+
+                {rental.status === "COMPLETED" && (
+                  <div className="rounded-2xl bg-purple-500/10 px-4 py-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-purple-600 dark:text-purple-400">
+                      <BadgeCheck className="size-4" />
+                      This rental has been completed.
+                    </div>
+                  </div>
+                )}
 
                 <div className="rounded-2xl bg-muted/30 px-4 py-3">
                   <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
@@ -319,4 +370,3 @@ const MyRentalRequests = () => {
 };
 
 export default MyRentalRequests;
-

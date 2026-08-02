@@ -1,125 +1,66 @@
 "use client";
 
-import { useState } from "react";
-import { Bath, BedDouble, Heart, MapPin, Maximize, Star } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import {
+  Bath,
+  BedDouble,
+  Building2,
+  Heart,
+  Loader2,
+  MapPin,
+} from "lucide-react";
 
-type Property = {
-  id: number;
-  title: string;
-  location: string;
-  price: number;
-  beds: number;
-  baths: number;
-  area: number;
-  type: string;
-  rating: number;
-  image: string;
-  featured?: boolean;
-};
+import { cn } from "@/lib/utils";
 
-const properties: Property[] = [
-  {
-    id: 1,
-    title: "Sunlit Modern Apartment",
-    location: "Downtown, Seattle",
-    price: 2400,
-    beds: 2,
-    baths: 2,
-    area: 1150,
-    type: "Apartment",
-    rating: 4.9,
-    image: "/properties/apartment-1.png",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Contemporary Family House",
-    location: "Bellevue, WA",
-    price: 3200,
-    beds: 4,
-    baths: 3,
-    area: 2100,
-    type: "House",
-    rating: 4.8,
-    image: "/properties/house-2.png",
-    featured: true,
-  },
-  {
-    id: 3,
-    title: "Cozy City Studio",
-    location: "Capitol Hill, Seattle",
-    price: 1450,
-    beds: 1,
-    baths: 1,
-    area: 620,
-    type: "Studio",
-    rating: 4.7,
-    image: "/properties/studio-3.png",
-  },
-  {
-    id: 4,
-    title: "Poolside Luxury Villa",
-    location: "Scottsdale, AZ",
-    price: 5600,
-    beds: 5,
-    baths: 4,
-    area: 3400,
-    type: "Villa",
-    rating: 5.0,
-    image: "/properties/villa-4.png",
-    featured: true,
-  },
-  {
-    id: 5,
-    title: "Industrial Brick Loft",
-    location: "Portland, OR",
-    price: 2100,
-    beds: 2,
-    baths: 1,
-    area: 1300,
-    type: "Loft",
-    rating: 4.8,
-    image: "/properties/loft-5.png",
-  },
-  {
-    id: 6,
-    title: "Skyline View Condo",
-    location: "San Francisco, CA",
-    price: 4100,
-    beds: 3,
-    baths: 2,
-    area: 1650,
-    type: "Condo",
-    rating: 4.9,
-    image: "/properties/condo-6.png",
-  },
-];
+import { getTenantProperties, AdminProperty } from "@/service/property.service";
 
-function PropertyCard({ property }: { property: Property }) {
+function PropertyCard({ property }: { property: AdminProperty }) {
   const [liked, setLiked] = useState(false);
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-foreground/5">
+      {/* =========================
+          IMAGE
+      ========================= */}
+
       <div
-        className="relative  overflow-hidden"
+        className="relative overflow-hidden"
         style={{ aspectRatio: "4 / 3" }}
       >
-        <Image
-          src={property.image || "/placeholder.svg"}
-          alt={property.title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
-        />
-        {property.featured && (
-          <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground shadow-sm">
-            Featured
-          </span>
+        {property.image ? (
+          <Image
+            src={property.image}
+            alt={property.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center bg-primary/5">
+            <Building2 className="size-16 text-primary/20" />
+          </div>
         )}
+
+        {/* Available Status */}
+
+        <span
+          className={cn(
+            "absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-bold shadow-sm backdrop-blur",
+            property.isAvailable
+              ? "bg-emerald-500/90 text-white"
+              : "bg-red-500/90 text-white",
+          )}
+        >
+          {property.isAvailable ? "Available" : "Rented"}
+        </span>
+
+        {/* Favorite */}
+
         <button
           type="button"
-          onClick={() => setLiked((v) => !v)}
+          onClick={() => setLiked((value) => !value)}
           aria-label={liked ? "Remove from favorites" : "Add to favorites"}
           aria-pressed={liked}
           className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full bg-background/90 text-foreground shadow-sm backdrop-blur transition-colors hover:bg-background"
@@ -131,56 +72,79 @@ function PropertyCard({ property }: { property: Property }) {
             )}
           />
         </button>
+
+        {/* Category */}
+
         <span className="absolute bottom-3 left-3 rounded-full bg-background/90 px-2.5 py-1 text-xs font-semibold text-foreground backdrop-blur">
-          {property.type}
+          {property.category.name}
         </span>
       </div>
 
+      {/* =========================
+          CONTENT
+      ========================= */}
+
       <div className="p-5">
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="text-balance font-bold text-foreground">
-            {property.title}
-          </h3>
-          <span className="flex shrink-0 items-center gap-1 text-sm font-semibold text-foreground">
-            <Star className="size-4 fill-primary text-primary" />
-            {property.rating.toFixed(1)}
-          </span>
-        </div>
+        {/* Title */}
+
+        <h3 className="line-clamp-1 text-balance font-bold text-foreground">
+          {property.title}
+        </h3>
+
+        {/* Location */}
 
         <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-          <MapPin className="size-4 text-primary" />
-          {property.location}
+          <MapPin className="size-4 shrink-0 text-primary" />
+
+          <span className="truncate">{property.location}</span>
         </p>
+
+        {/* Features */}
 
         <div className="mt-4 flex items-center gap-4 border-t border-border pt-4 text-sm text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <BedDouble className="size-4" />
-            {property.beds} bd
+            {property.bedrooms} bd
           </span>
+
           <span className="flex items-center gap-1.5">
             <Bath className="size-4" />
-            {property.baths} ba
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Maximize className="size-4" />
-            {property.area} ft²
+            {property.bathrooms} ba
           </span>
         </div>
 
-        <div className="mt-4 flex items-center justify-between">
+        {/* Amenities */}
+
+        {property.amenities.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {property.amenities.slice(0, 3).map((amenity) => (
+              <span
+                key={amenity}
+                className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+              >
+                {amenity}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Price + Details */}
+
+        <div className="mt-4 flex items-center justify-between gap-3">
           <p className="text-lg font-extrabold text-foreground">
-            ${property.price.toLocaleString()}
+            ৳{Number(property.price).toLocaleString()}
             <span className="text-sm font-medium text-muted-foreground">
               {" "}
-              /mo
+              /month
             </span>
           </p>
-          <a
-            href="#"
+
+          <Link
+            href={`/properties/${property.id}`}
             className="inline-flex h-9 items-center justify-center rounded-lg bg-secondary px-4 text-sm font-semibold text-secondary-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
           >
             View details
-          </a>
+          </Link>
         </div>
       </div>
     </article>
@@ -188,31 +152,127 @@ function PropertyCard({ property }: { property: Property }) {
 }
 
 export function FeaturedProperties() {
+  const [properties, setProperties] = useState<AdminProperty[]>([]);
+
+  const [loading, setLoading] = useState(true);
+
+  const [error, setError] = useState("");
+
+  // =========================
+  // LOAD PROPERTIES
+  // =========================
+
+  useEffect(() => {
+    const loadProperties = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const data = await getTenantProperties();
+
+        // Home page-এ শুধু ৬টা property
+        setProperties(data.slice(0, 6));
+      } catch (error) {
+        console.error("Failed to load properties:", error);
+
+        setError(
+          error instanceof Error ? error.message : "Failed to load properties",
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProperties();
+  }, []);
+
   return (
     <section id="featured" className="bg-secondary/40 py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* =========================
+            HEADER
+        ========================= */}
+
         <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <span className="text-sm font-bold uppercase tracking-wider text-primary">
               Handpicked for you
             </span>
+
             <h2 className="mt-2 text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
               Featured properties
             </h2>
+
+            <p className="mt-2 max-w-xl text-sm text-muted-foreground">
+              Discover available rental properties from our landlords.
+            </p>
           </div>
-          <a
-            href="#"
+
+          {/* Explore All */}
+
+          <Link
+            href="/properties"
             className="inline-flex h-10 items-center justify-center rounded-xl border border-border bg-background px-5 text-sm font-semibold text-foreground transition-colors hover:border-primary/40"
           >
             Explore all listings
-          </a>
+          </Link>
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {properties.map((property) => (
-            <PropertyCard key={property.id} property={property} />
-          ))}
-        </div>
+        {/* =========================
+            LOADING
+        ========================= */}
+
+        {loading && (
+          <div className="flex min-h-[250px] items-center justify-center">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="size-5 animate-spin" />
+
+              <span>Loading properties...</span>
+            </div>
+          </div>
+        )}
+
+        {/* =========================
+            ERROR
+        ========================= */}
+
+        {!loading && error && (
+          <div className="mt-10 rounded-2xl border border-red-500/20 bg-red-500/5 p-6 text-center">
+            <p className="font-semibold text-red-500">
+              Failed to load properties
+            </p>
+
+            <p className="mt-1 text-sm text-muted-foreground">{error}</p>
+          </div>
+        )}
+
+        {/* =========================
+            EMPTY
+        ========================= */}
+
+        {!loading && !error && properties.length === 0 && (
+          <div className="mt-10 flex min-h-[250px] flex-col items-center justify-center rounded-3xl border border-dashed border-border p-8 text-center">
+            <Building2 className="size-12 text-muted-foreground/40" />
+
+            <h3 className="mt-4 text-lg font-bold">No Properties Available</h3>
+
+            <p className="mt-1 text-sm text-muted-foreground">
+              There are no rental properties available right now.
+            </p>
+          </div>
+        )}
+
+        {/* =========================
+            PROPERTY GRID
+        ========================= */}
+
+        {!loading && !error && properties.length > 0 && (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {properties.slice(0, 3).map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

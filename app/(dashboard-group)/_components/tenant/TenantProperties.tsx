@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -27,7 +28,7 @@ const TenantProperties = () => {
 
   const router = useRouter();
 
-
+  // Fetch properties
   useEffect(() => {
     const fetchProperties = async () => {
       try {
@@ -43,10 +44,7 @@ const TenantProperties = () => {
 
         setProperties(availableProperties);
       } catch (error) {
-        console.error(
-          "Failed to fetch properties:",
-          error
-        );
+        console.error("Failed to fetch properties:", error);
 
         setError(
           error instanceof Error
@@ -61,7 +59,7 @@ const TenantProperties = () => {
     fetchProperties();
   }, []);
 
-
+  // Search filter
   const filteredProperties = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
@@ -83,12 +81,12 @@ const TenantProperties = () => {
     });
   }, [properties, searchTerm]);
 
-
+  // Clear search
   const clearSearch = () => {
     setSearchTerm("");
   };
 
-
+  // Loading state
   if (loading) {
     return (
       <section className="rounded-3xl border border-border/60 bg-card p-8 shadow-sm">
@@ -103,7 +101,7 @@ const TenantProperties = () => {
     );
   }
 
-
+  // Error state
   if (error) {
     return (
       <section className="rounded-3xl border border-destructive/20 bg-card p-8 shadow-sm">
@@ -126,7 +124,7 @@ const TenantProperties = () => {
 
   return (
     <section className="space-y-6">
-
+      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-sm font-medium text-primary">
@@ -143,6 +141,7 @@ const TenantProperties = () => {
           </p>
         </div>
 
+        {/* Property count */}
         <div className="flex w-fit items-center gap-2 rounded-xl border border-border/60 bg-card px-4 py-2.5 text-sm">
           <Building2 className="size-4 text-primary" />
 
@@ -156,16 +155,14 @@ const TenantProperties = () => {
         </div>
       </div>
 
+      {/* Search */}
       <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card px-4 py-3 shadow-sm transition focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-primary/10">
-
         <Search className="size-5 shrink-0 text-muted-foreground" />
 
         <input
           type="text"
           value={searchTerm}
-          onChange={(event) =>
-            setSearchTerm(event.target.value)
-          }
+          onChange={(event) => setSearchTerm(event.target.value)}
           placeholder="Search by property name, location or category..."
           className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
         />
@@ -180,12 +177,11 @@ const TenantProperties = () => {
             <X className="size-4" />
           </button>
         )}
-
       </div>
 
+      {/* No properties */}
       {properties.length === 0 ? (
         <div className="flex min-h-[350px] flex-col items-center justify-center rounded-3xl border border-border/60 bg-card p-8 text-center shadow-sm">
-
           <div className="flex size-16 items-center justify-center rounded-2xl bg-muted/60">
             <Building2 className="size-8 text-muted-foreground" />
           </div>
@@ -198,12 +194,10 @@ const TenantProperties = () => {
             There are currently no available properties.
             Please check again later.
           </p>
-
         </div>
       ) : filteredProperties.length === 0 ? (
-
+        /* No search result */
         <div className="flex min-h-[300px] flex-col items-center justify-center rounded-3xl border border-border/60 bg-card p-8 text-center shadow-sm">
-
           <div className="flex size-14 items-center justify-center rounded-2xl bg-muted/60">
             <Search className="size-7 text-muted-foreground" />
           </div>
@@ -227,47 +221,39 @@ const TenantProperties = () => {
           >
             Clear Search
           </button>
-
         </div>
-
       ) : (
-
+        /* Property Grid */
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-
           {filteredProperties.map((property) => (
             <article
               key={property.id}
-              className="group overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
+              className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm"
             >
-
+              {/* Property Image / Placeholder */}
               <div className="relative flex h-48 items-center justify-center bg-primary/5">
-
-                <Building2 className="size-16 text-primary/30 transition-transform duration-300 group-hover:scale-110" />
+                {/* No zoom effect */}
+                <Building2 className="size-16 text-primary/30" />
 
                 {/* Available */}
-
                 <span className="absolute left-4 top-4 rounded-full bg-emerald-500 px-3 py-1.5 text-xs font-bold text-white shadow-sm">
                   Available
                 </span>
 
                 {/* Category */}
-
                 <span className="absolute right-4 top-4 rounded-full bg-background/90 px-3 py-1.5 text-xs font-semibold backdrop-blur">
                   {property.category.name}
                 </span>
-
               </div>
 
+              {/* Content */}
               <div className="p-5">
-
                 {/* Title */}
-
                 <h2 className="truncate text-lg font-bold">
                   {property.title}
                 </h2>
 
                 {/* Location */}
-
                 <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                   <MapPin className="size-4 shrink-0 text-primary" />
 
@@ -277,13 +263,10 @@ const TenantProperties = () => {
                 </div>
 
                 {/* Price */}
-
                 <div className="mt-4">
                   <span className="text-xl font-bold text-primary">
                     ৳
-                    {Number(
-                      property.price
-                    ).toLocaleString()}
+                    {Number(property.price).toLocaleString()}
                   </span>
 
                   <span className="ml-1 text-xs text-muted-foreground">
@@ -292,9 +275,8 @@ const TenantProperties = () => {
                 </div>
 
                 {/* Features */}
-
                 <div className="mt-5 grid grid-cols-2 gap-2">
-
+                  {/* Bedrooms */}
                   <div className="flex items-center gap-2 rounded-xl bg-muted/40 px-3 py-2 text-xs">
                     <BedDouble className="size-4 text-primary" />
 
@@ -303,6 +285,7 @@ const TenantProperties = () => {
                     </span>
                   </div>
 
+                  {/* Bathrooms */}
                   <div className="flex items-center gap-2 rounded-xl bg-muted/40 px-3 py-2 text-xs">
                     <Bath className="size-4 text-primary" />
 
@@ -310,13 +293,10 @@ const TenantProperties = () => {
                       {property.bathrooms} Bathrooms
                     </span>
                   </div>
-
                 </div>
 
                 {/* Amenities */}
-
                 <div className="mt-4 flex flex-wrap gap-2">
-
                   {property.amenities
                     .slice(0, 3)
                     .map((amenity) => (
@@ -333,13 +313,10 @@ const TenantProperties = () => {
                       +{property.amenities.length - 3}
                     </span>
                   )}
-
                 </div>
 
                 {/* Landlord */}
-
                 <div className="mt-5 border-t border-border/60 pt-4">
-
                   <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
                     Landlord
                   </p>
@@ -347,11 +324,9 @@ const TenantProperties = () => {
                   <p className="mt-1 text-sm font-semibold">
                     {property.landlord.name}
                   </p>
-
                 </div>
 
                 {/* View Details */}
-
                 <button
                   type="button"
                   onClick={() =>
@@ -363,16 +338,14 @@ const TenantProperties = () => {
                 >
                   View Details
                 </button>
-
               </div>
             </article>
           ))}
-
         </div>
       )}
-
     </section>
   );
 };
 
 export default TenantProperties;
+
