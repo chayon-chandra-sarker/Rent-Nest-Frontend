@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -11,32 +12,88 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { logOut } from "@/service/logOut";
+
+type IUserData = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  phone: string;
+  image: string;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
+};
 
 type IUser = {
   success: boolean;
   statusCode: number;
   message: string;
-  data: {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-    status: string;
-    phone: string;
-    image: string;
-    address: string;
-    createdAt: string;
-    updatedAt: string;
-  };
+  data: IUserData;
 };
 
 type NavbarProps = {
   user: IUser;
 };
+
+type ProfileImageProps = {
+  image: string | null;
+  name: string;
+  size: "small" | "medium" | "large";
+};
+
+/* =====================================================
+   PROFILE IMAGE
+   IMPORTANT:
+   This component MUST stay outside SiteHeader
+===================================================== */
+
+const ProfileImage = ({
+  image,
+  name,
+  size,
+}: ProfileImageProps) => {
+  const [imageError, setImageError] = useState(false);
+
+  const imageSize =
+    size === "small"
+      ? 32
+      : size === "medium"
+        ? 40
+        : 44;
+
+  const avatarLetter =
+    name?.charAt(0)?.toUpperCase() || "U";
+
+  if (!image || imageError) {
+    return (
+      <div className="flex size-full items-center justify-center font-bold text-primary">
+        {avatarLetter}
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={image}
+      alt={name || "Profile"}
+      fill
+      sizes={`${imageSize}px`}
+      className="object-cover"
+      onError={() => setImageError(true)}
+      unoptimized
+    />
+  );
+};
+
+/* =====================================================
+   NAV LINKS
+===================================================== */
 
 const navLinks = [
   {
@@ -57,6 +114,10 @@ const navLinks = [
   },
 ];
 
+/* =====================================================
+   DASHBOARD PATH
+===================================================== */
+
 const getDashboardPath = (role: string) => {
   switch (role.toUpperCase()) {
     case "ADMIN":
@@ -73,35 +134,106 @@ const getDashboardPath = (role: string) => {
   }
 };
 
+/* =====================================================
+   SITE HEADER
+===================================================== */
+
 export function SiteHeader({ user }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const isLoggedIn = user?.success && !!user?.data;
+  /*
+   * Parent থেকে আসা user-কে initial state হিসেবে রাখা হয়েছে।
+   *
+   * পরে profile update হলে CustomEvent থেকে currentUser update হবে।
+   */
+  const [currentUser, setCurrentUser] = useState<IUser>(user);
+
+  /* =====================================================
+     PROFILE UPDATE EVENT
+  ===================================================== */
+
+  useEffect(() => {
+    const handleProfileUpdate = (
+      event: Event,
+    ) => {
+      const customEvent =
+        event as CustomEvent<IUserData>;
+
+      if (!customEvent.detail) {
+        return;
+      }
+
+      setCurrentUser((previousUser) => ({
+        ...previousUser,
+        success: true,
+        data: {
+          ...previousUser.data,
+          ...customEvent.detail,
+        },
+      }));
+    };
+
+    window.addEventListener(
+      "profile-updated",
+      handleProfileUpdate,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "profile-updated",
+        handleProfileUpdate,
+      );
+    };
+  }, []);
+
+  /* =====================================================
+     LOGIN STATE
+  ===================================================== */
+
+  const isLoggedIn =
+    currentUser?.success &&
+    !!currentUser?.data;
+
+  const profileImage =
+    isLoggedIn
+      ? currentUser.data.image
+      : null;
+
+  const profileName =
+    isLoggedIn
+      ? currentUser.data.name
+      : "Guest User";
+
+  /* =====================================================
+     LOGOUT
+  ===================================================== */
 
   const handleLogout = async () => {
     await logOut();
   };
+
+  /* =====================================================
+     MOBILE CLOSE
+  ===================================================== */
 
   const closeMobileMenu = () => {
     setOpen(false);
     setIsProfileOpen(false);
   };
 
-  const profileImage = isLoggedIn ? user.data.image : null;
-  console.log("Navbar User:", user);
-console.log("Navbar Image:", profileImage);
-  const profileName = isLoggedIn ? user.data.name : "Guest User";
-
-  const avatarLetter =
-    profileName?.charAt(0)?.toUpperCase() || "U";
-
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="flex h-16 w-full items-center justify-between px-1">
 
-        {/* ================= LOGO ================= */}
-        <Link href="/" className="flex items-center gap-2">
+        {/* =================================================
+            LOGO
+        ================================================= */}
+
+        <Link
+          href="/"
+          className="flex items-center gap-2"
+        >
           <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Home className="size-5" />
           </span>
@@ -111,7 +243,10 @@ console.log("Navbar Image:", profileImage);
           </span>
         </Link>
 
-        {/* ================= DESKTOP NAVIGATION ================= */}
+        {/* =================================================
+            DESKTOP NAVIGATION
+        ================================================= */}
+
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <a
@@ -124,61 +259,64 @@ console.log("Navbar Image:", profileImage);
           ))}
         </nav>
 
-        {/* ================= DESKTOP PROFILE ================= */}
+        {/* =================================================
+            DESKTOP PROFILE
+        ================================================= */}
+
         <div className="relative hidden md:block">
           <button
             type="button"
             onClick={() =>
-              setIsProfileOpen((value) => !value)
+              setIsProfileOpen(
+                (value) => !value,
+              )
             }
             className="relative size-10 overflow-hidden rounded-xl border border-border bg-primary/10 transition hover:ring-2 hover:ring-primary/30"
             aria-label="Open profile menu"
             aria-expanded={isProfileOpen}
           >
-            {isLoggedIn && profileImage ? (
-              <Image
-                src={profileImage}
-                alt={profileName || "Profile"}
-                fill
-                sizes="40px"
-                className="object-cover"
+            {isLoggedIn ? (
+              <ProfileImage
+                image={profileImage}
+                name={profileName}
+                size="medium"
               />
             ) : (
-              <div className="flex size-full items-center justify-center font-bold text-primary">
-                {isLoggedIn ? (
-                  avatarLetter
-                ) : (
-                  <User className="size-5" />
-                )}
+              <div className="flex size-full items-center justify-center text-primary">
+                <User className="size-5" />
               </div>
             )}
           </button>
 
-          {/* Desktop Dropdown */}
+          {/* =================================================
+              DESKTOP DROPDOWN
+          ================================================= */}
+
           {isProfileOpen && (
             <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-border bg-background p-2 shadow-xl">
 
-              {/* User Info */}
-              <div className="border-b border-border px-3 py-3">
+              {/* USER INFO */}
 
+              <div className="border-b border-border px-3 py-3">
                 <div className="flex items-center gap-3">
 
-                  {/* Dropdown Avatar */}
+                  {/* DROPDOWN AVATAR */}
+
                   <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-primary/10">
-                    {isLoggedIn && profileImage ? (
-                      <Image
-                        src={profileImage}
-                        alt={profileName || "Profile"}
-                        fill
-                        sizes="44px"
-                        className="object-cover"
+                    {isLoggedIn ? (
+                      <ProfileImage
+                        image={profileImage}
+                        name={profileName}
+                        size="large"
                       />
                     ) : (
                       <div className="flex size-full items-center justify-center font-bold text-primary">
-                        {avatarLetter}
+                        <User className="size-5" />
                       </div>
                     )}
                   </div>
+
+                  {/* NAME + EMAIL */}
 
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-foreground">
@@ -187,60 +325,76 @@ console.log("Navbar Image:", profileImage);
 
                     <p className="truncate text-xs text-muted-foreground">
                       {isLoggedIn
-                        ? user.data.email
+                        ? currentUser.data.email
                         : "Please login to continue"}
                     </p>
                   </div>
-
                 </div>
+
+                {/* ROLE */}
 
                 {isLoggedIn && (
                   <span className="mt-3 inline-flex rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase text-primary">
-                    {user.data.role}
+                    {currentUser.data.role}
                   </span>
                 )}
               </div>
 
-              {/* Logged In Menu */}
+              {/* =================================================
+                  LOGGED IN MENU
+              ================================================= */}
+
               {isLoggedIn && (
                 <div className="py-2">
 
-                  {/* Profile */}
+                  {/* PROFILE */}
+
                   <Link
                     href="/profile"
-                    onClick={() => setIsProfileOpen(false)}
+                    onClick={() =>
+                      setIsProfileOpen(false)
+                    }
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition hover:bg-muted"
                   >
                     <User className="size-4" />
                     <span>Profile</span>
                   </Link>
 
-                  {/* Dashboard */}
+                  {/* DASHBOARD */}
+
                   <Link
-                    href={getDashboardPath(user.data.role)}
-                    onClick={() => setIsProfileOpen(false)}
+                    href={getDashboardPath(
+                      currentUser.data.role,
+                    )}
+                    onClick={() =>
+                      setIsProfileOpen(false)
+                    }
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition hover:bg-primary/10 hover:text-primary"
                   >
                     <LayoutDashboard className="size-4" />
                     <span>Dashboard</span>
                   </Link>
 
-                  {/* Settings */}
+                  {/* SETTINGS */}
+
                   <Link
                     href="/settings"
-                    onClick={() => setIsProfileOpen(false)}
+                    onClick={() =>
+                      setIsProfileOpen(false)
+                    }
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition hover:bg-muted"
                   >
                     <Settings className="size-4" />
                     <span>Settings</span>
                   </Link>
-
                 </div>
               )}
 
-              {/* Login / Logout */}
-              <div className="border-t border-border pt-2">
+              {/* =================================================
+                  LOGIN / LOGOUT
+              ================================================= */}
 
+              <div className="border-t border-border pt-2">
                 {isLoggedIn ? (
                   <button
                     type="button"
@@ -253,28 +407,38 @@ console.log("Navbar Image:", profileImage);
                 ) : (
                   <Link
                     href="/login"
-                    onClick={() => setIsProfileOpen(false)}
+                    onClick={() =>
+                      setIsProfileOpen(false)
+                    }
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition hover:bg-muted"
                   >
                     <LogIn className="size-4" />
                     <span>Login</span>
                   </Link>
                 )}
-
               </div>
             </div>
           )}
         </div>
 
-        {/* ================= MOBILE MENU BUTTON ================= */}
+        {/* =================================================
+            MOBILE MENU BUTTON
+        ================================================= */}
+
         <button
           type="button"
           onClick={() => {
-            setOpen((value) => !value);
+            setOpen(
+              (value) => !value,
+            );
             setIsProfileOpen(false);
           }}
           className="inline-flex size-10 items-center justify-center rounded-xl border border-border text-foreground transition hover:bg-muted md:hidden"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={
+            open
+              ? "Close menu"
+              : "Open menu"
+          }
           aria-expanded={open}
         >
           {open ? (
@@ -285,18 +449,22 @@ console.log("Navbar Image:", profileImage);
         </button>
       </div>
 
-      {/* ================= MOBILE MENU ================= */}
+      {/* =====================================================
+          MOBILE MENU
+      ===================================================== */}
+
       <div
         className={cn(
           "overflow-hidden border-t border-border/60 bg-background transition-all duration-300 md:hidden",
           open
             ? "max-h-[700px]"
-            : "max-h-0 border-t-0"
+            : "max-h-0 border-t-0",
         )}
       >
         <div className="flex flex-col gap-1 px-4 py-4">
 
-          {/* Navigation */}
+          {/* NAVIGATION */}
+
           {navLinks.map((link) => (
             <a
               key={link.label}
@@ -308,79 +476,84 @@ console.log("Navbar Image:", profileImage);
             </a>
           ))}
 
-          {/* Account Section */}
+          {/* ACCOUNT */}
+
           <div className="mt-2 border-t border-border pt-3">
 
             <button
               type="button"
               onClick={() =>
-                setIsProfileOpen((value) => !value)
+                setIsProfileOpen(
+                  (value) => !value,
+                )
               }
               className="flex w-full items-center justify-between rounded-xl border border-border px-4 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
               aria-expanded={isProfileOpen}
             >
               <span className="flex min-w-0 items-center gap-3">
 
-                {/* Mobile Avatar */}
+                {/* MOBILE AVATAR */}
+
                 <div className="relative size-8 shrink-0 overflow-hidden rounded-full bg-primary/10">
-                  {isLoggedIn && profileImage ? (
-                    <Image
-                      src={profileImage}
-                      alt={profileName || "Profile"}
-                      fill
-                      sizes="32px"
-                      className="object-cover"
+                  {isLoggedIn ? (
+                    <ProfileImage
+                      image={profileImage}
+                      name={profileName}
+                      size="small"
                     />
                   ) : (
-                    <div className="flex size-full items-center justify-center text-sm font-bold text-primary">
-                      {isLoggedIn ? (
-                        avatarLetter
-                      ) : (
-                        <User className="size-4" />
-                      )}
+                    <div className="flex size-full items-center justify-center text-primary">
+                      <User className="size-4" />
                     </div>
                   )}
                 </div>
 
                 <span className="truncate">
-                  {isLoggedIn ? user.data.name : "Account"}
+                  {isLoggedIn
+                    ? profileName
+                    : "Account"}
                 </span>
-
               </span>
 
               <ChevronDown
                 className={cn(
                   "size-4 shrink-0 transition-transform duration-200",
-                  isProfileOpen && "rotate-180"
+                  isProfileOpen &&
+                    "rotate-180",
                 )}
               />
             </button>
 
-            {/* Mobile Profile Dropdown */}
+            {/* =================================================
+                MOBILE PROFILE DROPDOWN
+            ================================================= */}
+
             {isProfileOpen && (
               <div className="mt-2 overflow-hidden rounded-xl border border-border bg-muted/30 p-2">
 
-                {/* User Info */}
+                {/* USER INFO */}
+
                 <div className="border-b border-border px-3 py-3">
 
                   <div className="flex items-center gap-3">
 
-                    {/* Mobile Dropdown Avatar */}
+                    {/* AVATAR */}
+
                     <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-primary/10">
-                      {isLoggedIn && profileImage ? (
-                        <Image
-                          src={profileImage}
-                          alt={profileName || "Profile"}
-                          fill
-                          sizes="44px"
-                          className="object-cover"
+                      {isLoggedIn ? (
+                        <ProfileImage
+                          image={profileImage}
+                          name={profileName}
+                          size="large"
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center font-bold text-primary">
-                          {avatarLetter}
+                          <User className="size-5" />
                         </div>
                       )}
                     </div>
+
+                    {/* NAME + EMAIL */}
 
                     <div className="min-w-0">
                       <p className="truncate font-semibold text-foreground">
@@ -389,26 +562,28 @@ console.log("Navbar Image:", profileImage);
 
                       <p className="truncate text-xs text-muted-foreground">
                         {isLoggedIn
-                          ? user.data.email
+                          ? currentUser.data.email
                           : "Please login to continue"}
                       </p>
                     </div>
-
                   </div>
+
+                  {/* ROLE */}
 
                   {isLoggedIn && (
                     <span className="mt-3 inline-flex rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase text-primary">
-                      {user.data.role}
+                      {currentUser.data.role}
                     </span>
                   )}
-
                 </div>
 
-                {/* Logged In Options */}
+                {/* OPTIONS */}
+
                 {isLoggedIn && (
                   <div className="py-2">
 
-                    {/* Profile */}
+                    {/* PROFILE */}
+
                     <Link
                       href="/profile"
                       onClick={closeMobileMenu}
@@ -418,9 +593,12 @@ console.log("Navbar Image:", profileImage);
                       <span>Profile</span>
                     </Link>
 
-                    {/* Dashboard */}
+                    {/* DASHBOARD */}
+
                     <Link
-                      href={getDashboardPath(user.data.role)}
+                      href={getDashboardPath(
+                        currentUser.data.role,
+                      )}
                       onClick={closeMobileMenu}
                       className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-foreground transition hover:bg-primary/10 hover:text-primary"
                     >
@@ -428,7 +606,8 @@ console.log("Navbar Image:", profileImage);
                       <span>Dashboard</span>
                     </Link>
 
-                    {/* Settings */}
+                    {/* SETTINGS */}
+
                     <Link
                       href="/settings"
                       onClick={closeMobileMenu}
@@ -437,13 +616,12 @@ console.log("Navbar Image:", profileImage);
                       <Settings className="size-4" />
                       <span>Settings</span>
                     </Link>
-
                   </div>
                 )}
 
-                {/* Login / Logout */}
-                <div className="border-t border-border pt-2">
+                {/* LOGIN / LOGOUT */}
 
+                <div className="border-t border-border pt-2">
                   {isLoggedIn ? (
                     <button
                       type="button"
@@ -463,15 +641,13 @@ console.log("Navbar Image:", profileImage);
                       <span>Login</span>
                     </Link>
                   )}
-
                 </div>
-
               </div>
             )}
-
           </div>
         </div>
       </div>
     </header>
   );
 }
+
