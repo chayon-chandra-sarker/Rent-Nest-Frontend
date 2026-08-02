@@ -17,19 +17,10 @@ const LandlordDashboardLayout = ({
   return (
     <div className="min-h-screen bg-background">
       <div className="flex min-h-screen">
-        {/* =========================
-            SIDEBAR
-        ========================= */}
-
         <LandlordSidebar
           mobileOpen={mobileOpen}
           onClose={() => setMobileOpen(false)}
         />
-
-        {/* =========================
-            MAIN AREA
-        ========================= */}
-
         <div className="min-w-0 flex-1">
           {/* Mobile Header */}
           <header className="sticky top-0 z-30 flex h-16 items-center border-b border-border/60 bg-background/90 px-4 backdrop-blur-md lg:hidden">

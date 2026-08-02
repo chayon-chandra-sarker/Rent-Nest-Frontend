@@ -8,11 +8,12 @@ import {
   ClipboardList,
   CreditCard,
   User,
-  Settings,
   Home,
   X,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { logOut } from "@/service/logOut";
 
 interface LandlordSidebarProps {
   mobileOpen?: boolean;
@@ -45,11 +46,6 @@ const menuItems = [
     href: "/land-lord-dashboard/profile",
     icon: User,
   },
-  {
-    label: "Settings",
-    href: "/land-lord-dashboard/settings",
-    icon: Settings,
-  },
 ];
 
 const LandlordSidebar = ({
@@ -60,17 +56,10 @@ const LandlordSidebar = ({
 
   return (
     <>
-      {/* =========================
-          DESKTOP SIDEBAR
-      ========================= */}
-
       <aside className="hidden h-screen w-64 shrink-0 border-r border-border/60 bg-card lg:sticky lg:top-0 lg:flex lg:flex-col">
         {/* Logo */}
         <div className="flex h-16 items-center border-b border-border/60 px-5">
-          <Link
-            href="/"
-            className="flex items-center gap-2"
-          >
+          <Link href="/" className="flex items-center gap-2">
             <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <Home className="size-5" />
             </span>
@@ -119,21 +108,17 @@ const LandlordSidebar = ({
         </nav>
 
         {/* Bottom */}
-        <div className="border-t border-border/60 p-4">
-          <Link
-            href="/"
-            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+        <div className="border-t p-4 dark:border-slate-800">
+          <button
+            onClick={logOut}
+            type="button"
+            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-950"
           >
-            <Home className="size-4" />
-
-            <span>Back to Home</span>
-          </Link>
+            <LogOut size={20} />
+            Logout
+          </button>
         </div>
       </aside>
-
-      {/* =========================
-          MOBILE SIDEBAR
-      ========================= */}
 
       {mobileOpen && (
         <>
@@ -209,16 +194,15 @@ const LandlordSidebar = ({
             </nav>
 
             {/* Bottom */}
-            <div className="border-t border-border/60 p-4">
-              <Link
-                href="/"
-                onClick={onClose}
-                className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            <div className="border-t p-4 dark:border-slate-800">
+              <button
+                onClick={logOut}
+                type="button"
+                className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-950"
               >
-                <Home className="size-4" />
-
-                <span>Back to Home</span>
-              </Link>
+                <LogOut size={20} />
+                Logout
+              </button>
             </div>
           </aside>
         </>
