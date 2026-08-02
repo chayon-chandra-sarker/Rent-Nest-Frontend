@@ -1,5 +1,4 @@
 
-
 export interface PaymentTenant {
   id: string;
   name: string;
@@ -22,10 +21,8 @@ export interface Payment {
   createdAt: string;
 
   tenant: PaymentTenant;
-
   property: PaymentProperty;
 }
-
 
 interface PaymentsResponse {
   success: boolean;
@@ -33,7 +30,6 @@ interface PaymentsResponse {
   message: string;
   data: Payment[];
 }
-
 
 export const getAllPayments = async (): Promise<Payment[]> => {
   const response = await fetch("/api/admin/payments", {
@@ -46,14 +42,12 @@ export const getAllPayments = async (): Promise<Payment[]> => {
 
   if (!response.ok || !result.success) {
     throw new Error(
-      result.message || "Failed to fetch payments"
+      result.message || "Failed to fetch payments",
     );
   }
 
   return result.data;
 };
-
-
 
 export interface MyPayment {
   amount: string;
@@ -63,7 +57,6 @@ export interface MyPayment {
   transactionId: string;
   propertyTitle: string;
 }
-
 
 interface MyPaymentsResponse {
   success: boolean;
@@ -84,10 +77,50 @@ export const getMyPayments = async (): Promise<MyPayment[]> => {
 
   if (!response.ok || !result.success) {
     throw new Error(
-      result.message || "Failed to fetch my payments"
+      result.message || "Failed to fetch my payments",
     );
   }
 
   return result.data;
+};
+
+interface CheckoutResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    paymentUrl: string;
+  };
+}
+
+export const createCheckoutSession = async (
+  rentalRequestId: string,
+): Promise<string> => {
+  const response = await fetch(
+    "/api/payment/checkout",
+    {
+      method: "POST",
+      credentials: "include",
+      cache: "no-store",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        rentalRequestId,
+      }),
+    },
+  );
+
+  const result: CheckoutResponse =
+    await response.json();
+
+  if (!response.ok || !result.success) {
+    throw new Error(
+      result.message ||
+        "Failed to create checkout session",
+    );
+  }
+
+  return result.data.paymentUrl;
 };
 

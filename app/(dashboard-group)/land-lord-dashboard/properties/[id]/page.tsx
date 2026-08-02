@@ -45,10 +45,6 @@ const PropertyDetailsPage = async ({
         : "Failed to load property";
   }
 
-  // =========================
-  // ERROR STATE
-  // =========================
-
   if (error || !property) {
     return (
       <section className="flex min-h-[500px] items-center justify-center">
@@ -92,9 +88,6 @@ const PropertyDetailsPage = async ({
   return (
     <section className="space-y-6">
 
-      {/* =========================
-          HEADER
-      ========================= */}
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
@@ -126,15 +119,7 @@ const PropertyDetailsPage = async ({
 
       </div>
 
-      {/* =========================
-          MAIN CARD
-      ========================= */}
-
       <div className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm">
-
-        {/* =========================
-            IMAGE
-        ========================= */}
 
         <div className="relative h-[280px] w-full overflow-hidden bg-primary/5 sm:h-[400px]">
 
@@ -176,10 +161,6 @@ const PropertyDetailsPage = async ({
           </div>
 
         </div>
-
-        {/* =========================
-            PROPERTY CONTENT
-        ========================= */}
 
         <div className="space-y-7 p-5 sm:p-8">
 
@@ -231,10 +212,6 @@ const PropertyDetailsPage = async ({
             </div>
 
           </div>
-
-          {/* =========================
-              FEATURES
-          ========================= */}
 
           <div className="grid gap-3 sm:grid-cols-3">
 
@@ -312,10 +289,6 @@ const PropertyDetailsPage = async ({
 
           </div>
 
-          {/* =========================
-              DESCRIPTION
-          ========================= */}
-
           <div className="border-t border-border/60 pt-6">
 
             <h3 className="text-lg font-bold">
@@ -327,10 +300,6 @@ const PropertyDetailsPage = async ({
             </p>
 
           </div>
-
-          {/* =========================
-              AMENITIES
-          ========================= */}
 
           <div>
 
@@ -358,10 +327,6 @@ const PropertyDetailsPage = async ({
             )}
 
           </div>
-
-          {/* =========================
-              PROPERTY INFORMATION
-          ========================= */}
 
           <div className="grid gap-4 border-t border-border/60 pt-6 sm:grid-cols-2">
 
@@ -411,9 +376,6 @@ const PropertyDetailsPage = async ({
 
           </div>
 
-          {/* =========================
-              ACTIONS
-          ========================= */}
 
           <div className="flex flex-col gap-3 border-t border-border/60 pt-6 sm:flex-row">
 

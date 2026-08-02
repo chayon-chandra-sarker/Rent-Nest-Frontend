@@ -41,3 +41,8 @@ https://rent-nest-backend-fiy9.onrender.com
 | Landlord View Dashboard Stats | GET | `/api/dashboard/landlord` | Get landlord dashboard statistics |
 | Landlord View Profile | GET | `/api/user/profile` | Get logged-in landlord profile |
 | Landlord Update Profile | PUT | `/api/user/profile` | Update landlord profile information |
+| Create Checkout Session | POST | `/api/payment/checkout` | Create a Stripe checkout session for an approved rental |
+| Stripe Webhook | POST | `/api/payment/webhook` | Handle Stripe payment confirmation and update payment/rental status |
+| Get My Payments | GET | `/api/payment/my-payments `| Get logged-in tenant's payment history |
+| Get All Payments | GET | `/api/payment/all-payments` | Get all payments for admin |
+| Get Landlord Payments | GET | `/api/payment/landlord-payments` | Get payments related to landlord's properties |
