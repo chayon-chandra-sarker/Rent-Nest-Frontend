@@ -6,16 +6,16 @@ import {
   Menu,
   X,
   User,
-  Settings,
   LogIn,
   ChevronDown,
   LayoutDashboard,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { logOut } from "@/service/logOut";
+
 
 type IUserData = {
   id: string;
@@ -41,17 +41,12 @@ type NavbarProps = {
   user: IUser;
 };
 
+
 type ProfileImageProps = {
-  image: string | null;
-  name: string;
+  image?: string | null;
+  name?: string;
   size: "small" | "medium" | "large";
 };
-
-/* =====================================================
-   PROFILE IMAGE
-   IMPORTANT:
-   This component MUST stay outside SiteHeader
-===================================================== */
 
 const ProfileImage = ({
   image,
@@ -68,8 +63,9 @@ const ProfileImage = ({
         : 44;
 
   const avatarLetter =
-    name?.charAt(0)?.toUpperCase() || "U";
+    name?.trim()?.charAt(0)?.toUpperCase() || "U";
 
+  /* No image or broken image */
   if (!image || imageError) {
     return (
       <div className="flex size-full items-center justify-center font-bold text-primary">
@@ -91,9 +87,6 @@ const ProfileImage = ({
   );
 };
 
-/* =====================================================
-   NAV LINKS
-===================================================== */
 
 const navLinks = [
   {
@@ -114,10 +107,6 @@ const navLinks = [
   },
 ];
 
-/* =====================================================
-   DASHBOARD PATH
-===================================================== */
-
 const getDashboardPath = (role: string) => {
   switch (role.toUpperCase()) {
     case "ADMIN":
@@ -134,29 +123,15 @@ const getDashboardPath = (role: string) => {
   }
 };
 
-/* =====================================================
-   SITE HEADER
-===================================================== */
-
 export function SiteHeader({ user }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  /*
-   * Parent থেকে আসা user-কে initial state হিসেবে রাখা হয়েছে।
-   *
-   * পরে profile update হলে CustomEvent থেকে currentUser update হবে।
-   */
-  const [currentUser, setCurrentUser] = useState<IUser>(user);
-
-  /* =====================================================
-     PROFILE UPDATE EVENT
-  ===================================================== */
+  const [updatedProfile, setUpdatedProfile] =
+    useState<IUserData | null>(null);
 
   useEffect(() => {
-    const handleProfileUpdate = (
-      event: Event,
-    ) => {
+    const handleProfileUpdate = (event: Event) => {
       const customEvent =
         event as CustomEvent<IUserData>;
 
@@ -164,14 +139,7 @@ export function SiteHeader({ user }: NavbarProps) {
         return;
       }
 
-      setCurrentUser((previousUser) => ({
-        ...previousUser,
-        success: true,
-        data: {
-          ...previousUser.data,
-          ...customEvent.detail,
-        },
-      }));
+      setUpdatedProfile(customEvent.detail);
     };
 
     window.addEventListener(
@@ -187,35 +155,45 @@ export function SiteHeader({ user }: NavbarProps) {
     };
   }, []);
 
-  /* =====================================================
-     LOGIN STATE
-  ===================================================== */
+  const effectiveUserData =
+    updatedProfile
+      ? {
+          ...user.data,
+          ...updatedProfile,
+        }
+      : user.data;
 
   const isLoggedIn =
-    currentUser?.success &&
-    !!currentUser?.data;
+    user?.success === true &&
+    !!user?.data;
 
   const profileImage =
     isLoggedIn
-      ? currentUser.data.image
+      ? effectiveUserData.image
       : null;
 
   const profileName =
     isLoggedIn
-      ? currentUser.data.name
+      ? effectiveUserData.name
       : "Guest User";
 
-  /* =====================================================
-     LOGOUT
-  ===================================================== */
+  const profileEmail =
+    isLoggedIn
+      ? effectiveUserData.email
+      : "Please login to continue";
+
+  const profileRole =
+    isLoggedIn
+      ? effectiveUserData.role
+      : "";
 
   const handleLogout = async () => {
-    await logOut();
+    try {
+      await logOut();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
-
-  /* =====================================================
-     MOBILE CLOSE
-  ===================================================== */
 
   const closeMobileMenu = () => {
     setOpen(false);
@@ -225,10 +203,6 @@ export function SiteHeader({ user }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="flex h-16 w-full items-center justify-between px-1">
-
-        {/* =================================================
-            LOGO
-        ================================================= */}
 
         <Link
           href="/"
@@ -243,10 +217,6 @@ export function SiteHeader({ user }: NavbarProps) {
           </span>
         </Link>
 
-        {/* =================================================
-            DESKTOP NAVIGATION
-        ================================================= */}
-
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (
             <a
@@ -259,17 +229,11 @@ export function SiteHeader({ user }: NavbarProps) {
           ))}
         </nav>
 
-        {/* =================================================
-            DESKTOP PROFILE
-        ================================================= */}
-
         <div className="relative hidden md:block">
           <button
             type="button"
             onClick={() =>
-              setIsProfileOpen(
-                (value) => !value,
-              )
+              setIsProfileOpen((value) => !value)
             }
             className="relative size-10 overflow-hidden rounded-xl border border-border bg-primary/10 transition hover:ring-2 hover:ring-primary/30"
             aria-label="Open profile menu"
@@ -277,6 +241,7 @@ export function SiteHeader({ user }: NavbarProps) {
           >
             {isLoggedIn ? (
               <ProfileImage
+                key={`navbar-${profileImage || "no-image"}`}
                 image={profileImage}
                 name={profileName}
                 size="medium"
@@ -288,9 +253,6 @@ export function SiteHeader({ user }: NavbarProps) {
             )}
           </button>
 
-          {/* =================================================
-              DESKTOP DROPDOWN
-          ================================================= */}
 
           {isProfileOpen && (
             <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-border bg-background p-2 shadow-xl">
@@ -300,11 +262,12 @@ export function SiteHeader({ user }: NavbarProps) {
               <div className="border-b border-border px-3 py-3">
                 <div className="flex items-center gap-3">
 
-                  {/* DROPDOWN AVATAR */}
+                  {/* AVATAR */}
 
                   <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-primary/10">
                     {isLoggedIn ? (
                       <ProfileImage
+                        key={`desktop-dropdown-${profileImage || "no-image"}`}
                         image={profileImage}
                         name={profileName}
                         size="large"
@@ -324,9 +287,7 @@ export function SiteHeader({ user }: NavbarProps) {
                     </p>
 
                     <p className="truncate text-xs text-muted-foreground">
-                      {isLoggedIn
-                        ? currentUser.data.email
-                        : "Please login to continue"}
+                      {profileEmail}
                     </p>
                   </div>
                 </div>
@@ -335,14 +296,12 @@ export function SiteHeader({ user }: NavbarProps) {
 
                 {isLoggedIn && (
                   <span className="mt-3 inline-flex rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase text-primary">
-                    {currentUser.data.role}
+                    {profileRole}
                   </span>
                 )}
               </div>
 
-              {/* =================================================
-                  LOGGED IN MENU
-              ================================================= */}
+              {/* OPTIONS */}
 
               {isLoggedIn && (
                 <div className="py-2">
@@ -363,9 +322,7 @@ export function SiteHeader({ user }: NavbarProps) {
                   {/* DASHBOARD */}
 
                   <Link
-                    href={getDashboardPath(
-                      currentUser.data.role,
-                    )}
+                    href={getDashboardPath(profileRole)}
                     onClick={() =>
                       setIsProfileOpen(false)
                     }
@@ -374,25 +331,10 @@ export function SiteHeader({ user }: NavbarProps) {
                     <LayoutDashboard className="size-4" />
                     <span>Dashboard</span>
                   </Link>
-
-                  {/* SETTINGS */}
-
-                  <Link
-                    href="/settings"
-                    onClick={() =>
-                      setIsProfileOpen(false)
-                    }
-                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition hover:bg-muted"
-                  >
-                    <Settings className="size-4" />
-                    <span>Settings</span>
-                  </Link>
                 </div>
               )}
 
-              {/* =================================================
-                  LOGIN / LOGOUT
-              ================================================= */}
+              {/* LOGIN / LOGOUT */}
 
               <div className="border-t border-border pt-2">
                 {isLoggedIn ? (
@@ -421,16 +363,10 @@ export function SiteHeader({ user }: NavbarProps) {
           )}
         </div>
 
-        {/* =================================================
-            MOBILE MENU BUTTON
-        ================================================= */}
-
         <button
           type="button"
           onClick={() => {
-            setOpen(
-              (value) => !value,
-            );
+            setOpen((value) => !value);
             setIsProfileOpen(false);
           }}
           className="inline-flex size-10 items-center justify-center rounded-xl border border-border text-foreground transition hover:bg-muted md:hidden"
@@ -448,10 +384,6 @@ export function SiteHeader({ user }: NavbarProps) {
           )}
         </button>
       </div>
-
-      {/* =====================================================
-          MOBILE MENU
-      ===================================================== */}
 
       <div
         className={cn(
@@ -497,6 +429,7 @@ export function SiteHeader({ user }: NavbarProps) {
                 <div className="relative size-8 shrink-0 overflow-hidden rounded-full bg-primary/10">
                   {isLoggedIn ? (
                     <ProfileImage
+                      key={`mobile-${profileImage || "no-image"}`}
                       image={profileImage}
                       name={profileName}
                       size="small"
@@ -524,9 +457,7 @@ export function SiteHeader({ user }: NavbarProps) {
               />
             </button>
 
-            {/* =================================================
-                MOBILE PROFILE DROPDOWN
-            ================================================= */}
+            {/* MOBILE PROFILE DROPDOWN */}
 
             {isProfileOpen && (
               <div className="mt-2 overflow-hidden rounded-xl border border-border bg-muted/30 p-2">
@@ -534,7 +465,6 @@ export function SiteHeader({ user }: NavbarProps) {
                 {/* USER INFO */}
 
                 <div className="border-b border-border px-3 py-3">
-
                   <div className="flex items-center gap-3">
 
                     {/* AVATAR */}
@@ -542,6 +472,7 @@ export function SiteHeader({ user }: NavbarProps) {
                     <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-primary/10">
                       {isLoggedIn ? (
                         <ProfileImage
+                          key={`mobile-dropdown-${profileImage || "no-image"}`}
                           image={profileImage}
                           name={profileName}
                           size="large"
@@ -561,9 +492,7 @@ export function SiteHeader({ user }: NavbarProps) {
                       </p>
 
                       <p className="truncate text-xs text-muted-foreground">
-                        {isLoggedIn
-                          ? currentUser.data.email
-                          : "Please login to continue"}
+                        {profileEmail}
                       </p>
                     </div>
                   </div>
@@ -572,7 +501,7 @@ export function SiteHeader({ user }: NavbarProps) {
 
                   {isLoggedIn && (
                     <span className="mt-3 inline-flex rounded-full bg-primary/10 px-2.5 py-1 text-[10px] font-semibold uppercase text-primary">
-                      {currentUser.data.role}
+                      {profileRole}
                     </span>
                   )}
                 </div>
@@ -596,25 +525,12 @@ export function SiteHeader({ user }: NavbarProps) {
                     {/* DASHBOARD */}
 
                     <Link
-                      href={getDashboardPath(
-                        currentUser.data.role,
-                      )}
+                      href={getDashboardPath(profileRole)}
                       onClick={closeMobileMenu}
                       className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-foreground transition hover:bg-primary/10 hover:text-primary"
                     >
                       <LayoutDashboard className="size-4" />
                       <span>Dashboard</span>
-                    </Link>
-
-                    {/* SETTINGS */}
-
-                    <Link
-                      href="/settings"
-                      onClick={closeMobileMenu}
-                      className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-foreground transition hover:bg-muted"
-                    >
-                      <Settings className="size-4" />
-                      <span>Settings</span>
                     </Link>
                   </div>
                 )}

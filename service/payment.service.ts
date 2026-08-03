@@ -1,6 +1,3 @@
-import { cookies } from "next/headers";
-
-
 export interface PaymentTenant {
   id: string;
   name: string;
@@ -33,23 +30,29 @@ interface PaymentsResponse {
   data: Payment[];
 }
 
-export const getAllPayments = async (): Promise<Payment[]> => {
-  const response = await fetch("/api/admin/payments", {
-    method: "GET",
-    credentials: "include",
-    cache: "no-store",
-  });
-
-  const result: PaymentsResponse = await response.json();
-
-  if (!response.ok || !result.success) {
-    throw new Error(
-      result.message || "Failed to fetch payments",
+export const getAllPayments =
+  async (): Promise<Payment[]> => {
+    const response = await fetch(
+      "/api/admin/payments",
+      {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      },
     );
-  }
 
-  return result.data;
-};
+    const result: PaymentsResponse =
+      await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message ||
+          "Failed to fetch payments",
+      );
+    }
+
+    return result.data;
+  };
 
 export interface MyPayment {
   amount: string;
@@ -67,68 +70,29 @@ interface MyPaymentsResponse {
   data: MyPayment[];
 }
 
-export const getMyPayments = async (): Promise<MyPayment[]> => {
-  const response = await fetch("/api/payments/my", {
-    method: "GET",
-    credentials: "include",
-    cache: "no-store",
-  });
-
-  const result: MyPaymentsResponse =
-    await response.json();
-
-  if (!response.ok || !result.success) {
-    throw new Error(
-      result.message || "Failed to fetch my payments",
-    );
-  }
-
-  return result.data;
-};
-
-export const getLandlordPayments = async (): Promise<Payment[]> => {
-  const cookieStore = await cookies();
-
-  const accessToken =
-    cookieStore.get("accessToken")?.value;
-
-  if (!accessToken) {
-    throw new Error("Unauthorized");
-  }
-
-  const response = await fetch(
-    "https://rent-nest-backend-fiy9.onrender.com/api/payment/landlord-payments",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+export const getMyPayments =
+  async (): Promise<MyPayment[]> => {
+    const response = await fetch(
+      "/api/payments/my",
+      {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
       },
-      cache: "no-store",
-    },
-  );
-  const text = await response.text();
-
-  console.log("Landlord payment status:", response.status);
-  console.log("Landlord payment response:", text);
-
-  let result: PaymentsResponse;
-
-  try {
-    result = JSON.parse(text);
-  } catch {
-    throw new Error(
-      `Backend returned invalid JSON. Status: ${response.status}`,
     );
-  }
 
-  if (!response.ok || !result.success) {
-    throw new Error(
-      result.message || "Failed to fetch landlord payments",
-    );
-  }
+    const result: MyPaymentsResponse =
+      await response.json();
 
-  return result.data;
-};
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message ||
+          "Failed to fetch my payments",
+      );
+    }
+
+    return result.data;
+  };
 
 interface CheckoutResponse {
   success: boolean;
@@ -139,34 +103,77 @@ interface CheckoutResponse {
   };
 }
 
-export const createCheckoutSession = async (
-  rentalRequestId: string,
-): Promise<string> => {
-  const response = await fetch(
-    "/api/payment/checkout",
-    {
-      method: "POST",
-      credentials: "include",
-      cache: "no-store",
-      headers: {
-        "Content-Type": "application/json",
+export const createCheckoutSession =
+  async (
+    rentalRequestId: string,
+  ): Promise<string> => {
+    const response = await fetch(
+      "/api/payment/checkout",
+      {
+        method: "POST",
+        credentials: "include",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          rentalRequestId,
+        }),
       },
-      body: JSON.stringify({
-        rentalRequestId,
-      }),
-    },
-  );
-
-  const result: CheckoutResponse =
-    await response.json();
-
-  if (!response.ok || !result.success) {
-    throw new Error(
-      result.message ||
-        "Failed to create checkout session",
     );
-  }
 
-  return result.data.paymentUrl;
-};
+    const result: CheckoutResponse =
+      await response.json();
 
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message ||
+          "Failed to create checkout session",
+      );
+    }
+
+    return result.data.paymentUrl;
+  };
+
+interface VerifyPaymentResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    success: boolean;
+    status: string;
+    rentalStatus: string;
+  };
+}
+
+export const verifyCheckoutSession =
+  async (
+    sessionId: string,
+  ): Promise<VerifyPaymentResponse["data"]> => {
+    const response = await fetch(
+      "/api/payment/verify-session",
+      {
+        method: "POST",
+        credentials: "include",
+        cache: "no-store",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          sessionId,
+        }),
+      },
+    );
+
+    const result: VerifyPaymentResponse =
+      await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message ||
+          "Failed to verify payment",
+      );
+    }
+
+    return result.data;
+  };

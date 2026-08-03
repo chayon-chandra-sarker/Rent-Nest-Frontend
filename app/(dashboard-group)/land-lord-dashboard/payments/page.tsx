@@ -1,4 +1,5 @@
-import { getLandlordPayments } from "@/service/payment.service";
+
+import { getLandlordPayments } from "@/service/landlord-payment.service";
 import PaymentList from "../../_components/landlord/PaymentList";
 
 

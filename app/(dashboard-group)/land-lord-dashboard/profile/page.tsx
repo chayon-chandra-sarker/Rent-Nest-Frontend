@@ -17,9 +17,6 @@ const LandlordProfilePage = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  // ===============================
-  // Load Profile
-  // ===============================
   useEffect(() => {
     const loadProfile = async () => {
       try {
@@ -37,9 +34,6 @@ const LandlordProfilePage = () => {
     loadProfile();
   }, []);
 
-  // ===============================
-  // Loading
-  // ===============================
   if (loading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -50,9 +44,6 @@ const LandlordProfilePage = () => {
     );
   }
 
-  // ===============================
-  // Profile Not Found
-  // ===============================
   if (!profile) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -63,16 +54,11 @@ const LandlordProfilePage = () => {
     );
   }
 
-  // ===============================
-  // Update Profile
-  // ===============================
   const handleProfileUpdated = (updatedProfile: UserProfile) => {
     setProfile(updatedProfile);
 
-    // নতুন image হলে পুরোনো error state reset
     setImageError(false);
 
-    // Navbar / অন্য component-কে জানাবে
     window.dispatchEvent(
       new CustomEvent("profile-updated", {
         detail: updatedProfile,
@@ -82,9 +68,7 @@ const LandlordProfilePage = () => {
 
   return (
     <div className="space-y-6">
-      {/* ===============================
-          Header
-      =============================== */}
+    
       <div>
         <h1 className="text-2xl font-bold">
           My Profile
@@ -95,17 +79,12 @@ const LandlordProfilePage = () => {
         </p>
       </div>
 
-      {/* ===============================
-          Profile Card
-      =============================== */}
       <div className="overflow-hidden rounded-2xl border bg-card">
         {/* Cover */}
         <div className="h-32 bg-muted" />
 
         <div className="px-6 pb-6">
-          {/* ===============================
-              Profile Image
-          =============================== */}
+          
           <div className="-mt-14">
             <div className="flex size-28 items-center justify-center overflow-hidden rounded-full border-4 border-background bg-muted">
               {profile.image && !imageError ? (
@@ -135,9 +114,6 @@ const LandlordProfilePage = () => {
             </div>
           </div>
 
-          {/* ===============================
-              Name & Role
-          =============================== */}
           <div className="mt-4">
             <h2 className="text-xl font-semibold">
               {profile.name}
@@ -148,9 +124,6 @@ const LandlordProfilePage = () => {
             </p>
           </div>
 
-          {/* ===============================
-              Contact Information
-          =============================== */}
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {/* Email */}
             <div className="rounded-xl border p-4">
@@ -204,9 +177,6 @@ const LandlordProfilePage = () => {
             </div>
           </div>
 
-          {/* ===============================
-              Edit Profile Button
-          =============================== */}
           <div className="mt-8 flex justify-end">
             <button
               type="button"
@@ -218,9 +188,6 @@ const LandlordProfilePage = () => {
             </button>
           </div>
 
-          {/* ===============================
-              Edit Profile Modal
-          =============================== */}
           {editOpen && (
             <EditProfileForm
               profile={profile}
@@ -229,9 +196,6 @@ const LandlordProfilePage = () => {
             />
           )}
 
-          {/* ===============================
-              Account Information
-          =============================== */}
           <div className="mt-8 border-t pt-6">
             <h3 className="text-sm font-semibold">
               Account Information
