@@ -10,10 +10,11 @@ import {
   Tags,
   ClipboardList,
   CreditCard,
-  Settings,
   LogOut,
   Menu,
   X,
+  MessageSquare,
+  User,
 } from "lucide-react";
 import { logOut } from "@/service/logOut";
 
@@ -48,11 +49,16 @@ const menuItems = [
     href: "/admin-dashboard/payments",
     icon: CreditCard,
   },
-  // {
-  //   label: "Settings",
-  //   href: "/admin-dashboard/settings",
-  //   icon: Settings,
-  // },
+  {
+  label: "Reviews",
+  href: "/admin-dashboard/reviews",
+  icon: MessageSquare,
+},
+{
+  label: "Profile",
+  href: "/admin-dashboard/profile",
+  icon: User,
+},
 ];
 
 const DashboardLayout = ({
@@ -118,7 +124,6 @@ const DashboardLayout = ({
           </div>
         </aside>
 
-        {/* ================= MOBILE SIDEBAR OVERLAY ================= */}
         {isMobileMenuOpen && (
           <div
             className="fixed inset-0 z-40 bg-black/50 md:hidden"
@@ -126,7 +131,6 @@ const DashboardLayout = ({
           />
         )}
 
-        {/* ================= MOBILE SIDEBAR ================= */}
         <aside
           className={`fixed inset-y-0 left-0 z-50 w-72 transform border-r bg-white shadow-xl transition-transform duration-300 dark:border-slate-800 dark:bg-slate-900 md:hidden ${
             isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
@@ -191,7 +195,6 @@ const DashboardLayout = ({
           </div>
         </aside>
 
-        {/* ================= MAIN CONTENT ================= */}
         <main className="min-w-0 flex-1">
           {/* Mobile Top Bar */}
           <div className="sticky top-0 z-30 flex h-14 items-center border-b bg-white px-4 dark:border-slate-800 dark:bg-slate-900 md:hidden">

@@ -1,4 +1,3 @@
-
 import EditProfileForm from "@/components/Profile/EditProfileForm";
 import { getMyProfile } from "@/lib/actions/profile.query";
 
@@ -20,4 +19,3 @@ export default async function EditProfilePage() {
     </main>
   );
 }
-

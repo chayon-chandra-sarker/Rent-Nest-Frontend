@@ -181,3 +181,55 @@ export const deleteReview =
 
     return result.data;
   };
+
+  export const getAdminReviews = async (): Promise<Review[]> => {
+  const response = await fetch(
+    "/api/review/admin/all-reviews",
+    {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+    },
+  );
+
+  const result: ReviewsResponse =
+    await response.json();
+
+  if (!response.ok || !result.success) {
+    throw new Error(
+      result.message ||
+        "Failed to fetch admin reviews",
+    );
+  }
+
+  return result.data;
+};
+
+export const adminDeleteReview = async (
+  reviewId: string,
+): Promise<null> => {
+  const response = await fetch(
+    `/api/review/admin/${reviewId}`,
+    {
+      method: "DELETE",
+      credentials: "include",
+      cache: "no-store",
+    },
+  );
+
+  const result: {
+    success: boolean;
+    statusCode: number;
+    message: string;
+    data: null;
+  } = await response.json();
+
+  if (!response.ok || !result.success) {
+    throw new Error(
+      result.message ||
+        "Failed to delete review",
+    );
+  }
+
+  return result.data;
+};
