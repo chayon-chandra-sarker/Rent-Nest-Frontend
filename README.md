@@ -20,8 +20,7 @@ https://rent-nest-backend-fiy9.onrender.com/
 https://github.com/chayon-chandra-sarker/Rent-Nest-Backend-
 
 ---
-Admin Email      : chayon@gmail.com
-Admin Password   : 12345
+
 ## 📌 Project Overview
 
 RentNest provides a complete rental management ecosystem with three primary roles:
