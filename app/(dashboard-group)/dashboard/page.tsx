@@ -31,10 +31,6 @@ const UserDashboard = () => {
   const [paymentLoading, setPaymentLoading] =
     useState(true);
 
-  // =========================
-  // FETCH RENTAL REQUESTS
-  // =========================
-
   useEffect(() => {
     const fetchRentalRequests = async () => {
       try {
@@ -53,10 +49,6 @@ const UserDashboard = () => {
 
     fetchRentalRequests();
   }, []);
-
-  // =========================
-  // FETCH PAYMENTS
-  // =========================
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -77,10 +69,6 @@ const UserDashboard = () => {
     fetchPayments();
   }, []);
 
-  // =========================
-  // STATS
-  // =========================
-
   const totalRequests = rentalRequests.length;
 
   const approvedRequests = rentalRequests.filter(
@@ -98,16 +86,8 @@ const UserDashboard = () => {
       0
     );
 
-  // =========================
-  // UI
-  // =========================
-
   return (
     <div className="space-y-6">
-
-      {/* =========================
-          HEADER
-      ========================= */}
 
       <div>
         <h1 className="text-2xl font-bold tracking-tight">
@@ -120,10 +100,6 @@ const UserDashboard = () => {
         </p>
       </div>
 
-      {/* =========================
-          STATS
-      ========================= */}
-
       <TenantStats
         rentalLoading={rentalLoading}
         paymentLoading={paymentLoading}
@@ -131,16 +107,7 @@ const UserDashboard = () => {
         approvedRequests={approvedRequests}
         totalPaymentAmount={totalPaymentAmount}
       />
-
-      {/* =========================
-          QUICK ACTIONS
-      ========================= */}
-
       <QuickActions />
-
-      {/* =========================
-          RECENT ACTIVITY
-      ========================= */}
 
       <div className="grid gap-6 lg:grid-cols-2">
 

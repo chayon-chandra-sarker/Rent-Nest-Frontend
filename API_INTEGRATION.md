@@ -46,3 +46,9 @@ https://rent-nest-backend-fiy9.onrender.com
 | Get My Payments | GET | `/api/payment/my-payments `| Get logged-in tenant's payment history |
 | Get All Payments | GET | `/api/payment/all-payments` | Get all payments for admin |
 | Get Landlord Payments | GET | `/api/payment/landlord-payments` | Get payments related to landlord's properties |
+| Get All Reviews | GET | `/api/review/admin/all-reviews` | Get all reviews for admin |
+| Get Tenant Reviews | GET | `/api/review/my-reviews` | Get reviews created by the logged-in tenant |
+| Get All Reviews | GET | `/api/review/all-reviews` | Get all reviews for All User |
+| Create Review | POST | `/api/review/create `| Create a review for a user |
+| Update Review | PATCH | `/api/review/user/:id` | Update an existing review |
+| Delete Review | DELETE | `/api/review/user/:id` | Delete an existing review |

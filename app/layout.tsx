@@ -24,8 +24,77 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RentNest",
-  description: "Find your perfect rental home with RentNest.",
+  title: {
+    default: "RentNest | Find Your Perfect Rental Home",
+    template: "%s | RentNest",
+  },
+
+  description:
+    "RentNest is a modern rental marketplace where tenants can find their perfect home and landlords can manage rental properties easily.",
+
+  keywords: [
+    "RentNest",
+    "rental marketplace",
+    "rental property",
+    "rent house",
+    "property rental",
+    "find rental home",
+    "landlord",
+    "tenant",
+  ],
+
+  authors: [
+    {
+      name: "RentNest",
+    },
+  ],
+
+  creator: "RentNest",
+  publisher: "RentNest",
+
+  icons: {
+    icon: "/favicon.svg",
+  },
+
+  openGraph: {
+    title: "RentNest | Find Your Perfect Rental Home",
+
+    description:
+      "Find rental properties, send rental requests, make payments, and manage your rental journey with RentNest.",
+
+    siteName: "RentNest",
+
+    type: "website",
+
+    locale: "en_US",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+
+    title: "RentNest | Find Your Perfect Rental Home",
+
+    description:
+      "Find your perfect rental home and manage your rental journey with RentNest.",
+  },
+
+  robots: {
+    index: true,
+
+    follow: true,
+
+    googleBot: {
+      index: true,
+
+      follow: true,
+
+      "max-image-preview": "large",
+
+      "max-snippet": -1,
+
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export default async function RootLayout({

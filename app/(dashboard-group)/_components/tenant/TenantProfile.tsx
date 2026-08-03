@@ -11,6 +11,7 @@ import AccountInformation from "./profile/AccountInformation";
 
 
 import ProfileEditForm from "./profile/ProfileEditForm";
+import BecomeLandlordCard from "./profile/BecomeLandlordCard";
 
 const TenantProfile = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -44,10 +45,6 @@ const TenantProfile = () => {
     fetchProfile();
   }, []);
 
-  // =========================
-  // LOADING
-  // =========================
-
   if (loading) {
     return (
       <section className="rounded-3xl border border-border/60 bg-card p-10 shadow-sm">
@@ -61,10 +58,6 @@ const TenantProfile = () => {
       </section>
     );
   }
-
-  // =========================
-  // ERROR
-  // =========================
 
   if (error || !profile) {
     return (
@@ -85,53 +78,40 @@ const TenantProfile = () => {
   }
 
   return (
-    <section className="space-y-6">
-      {/* =========================
-          PROFILE HEADER
-      ========================= */}
-
-      <div className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm">
-        <ProfileHeader
-          profile={profile}
-          imageError={imageError}
-          setImageError={setImageError}
-        />
-      </div>
-
-      {/* =========================
-          EDIT PROFILE FORM
-      ========================= */}
-
-
-      {isEditing && (
-        <ProfileEditForm
-          profile={profile}
-          onClose={() => setIsEditing(false)}
-          onUpdated={(updatedProfile) => {
-            setProfile(updatedProfile);
-            setImageError(false);
-          }}
-        />
-      )}
-
-      {/* =========================
-          PERSONAL INFORMATION
-      ========================= */}
-
-      <PersonalInformation
+  <section className="space-y-6">
+    <div className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm">
+      <ProfileHeader
         profile={profile}
-        onEdit={() => {
-          setIsEditing(true);
+        imageError={imageError}
+        setImageError={setImageError}
+      />
+    </div>
+
+    <BecomeLandlordCard
+      role={profile.role}
+    />
+
+    {isEditing && (
+      <ProfileEditForm
+        profile={profile}
+        onClose={() => setIsEditing(false)}
+        onUpdated={(updatedProfile) => {
+          setProfile(updatedProfile);
+          setImageError(false);
         }}
       />
+    )}
 
-      {/* =========================
-          ACCOUNT INFORMATION
-      ========================= */}
+    <PersonalInformation
+      profile={profile}
+      onEdit={() => {
+        setIsEditing(true);
+      }}
+    />
 
-      <AccountInformation profile={profile} />
-    </section>
-  );
+    <AccountInformation profile={profile} />
+  </section>
+);
 };
 
 export default TenantProfile;

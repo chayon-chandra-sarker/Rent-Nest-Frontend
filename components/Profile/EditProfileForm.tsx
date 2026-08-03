@@ -74,7 +74,7 @@ export default function EditProfileForm({
 
       toast.success(data?.message || "Profile updated successfully!");
 
-      router.push("/profile");
+      router.push("/admin-dashboard/profile");
       router.refresh();
     } catch (error) {
       console.error("Update profile error:", error);
@@ -212,7 +212,7 @@ export default function EditProfileForm({
         <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
           <button
             type="button"
-            onClick={() => router.push("/profile")}
+            onClick={() => router.push("/admin-dashboard/profile")}
             disabled={loading}
             className="rounded-xl border px-5 py-3 text-sm font-medium transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50"
           >

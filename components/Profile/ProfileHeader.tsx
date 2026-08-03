@@ -99,7 +99,7 @@ export default function ProfileHeader({
 
           {/* Edit Profile Button */}
           <Link
-            href="/profile/edit"
+            href="/admin-dashboard/profile/edit"
             className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg sm:w-auto"
           >
             <Pencil className="size-4" />

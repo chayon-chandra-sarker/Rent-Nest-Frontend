@@ -15,6 +15,7 @@ import {
   X,
   MessageSquare,
   User,
+  UserRoundCheck,
 } from "lucide-react";
 import { logOut } from "@/service/logOut";
 
@@ -53,6 +54,11 @@ const menuItems = [
   label: "Reviews",
   href: "/admin-dashboard/reviews",
   icon: MessageSquare,
+},
+{
+  label: "Landlord Requests",
+  href: "/admin-dashboard/landlord-requests",
+  icon: UserRoundCheck,
 },
 {
   label: "Profile",
