@@ -1,4 +1,3 @@
-
 "use client";
 
 import { ReactNode } from "react";
@@ -11,6 +10,7 @@ import {
   CreditCard,
   User,
   LogOut,
+  MessageSquare,
 } from "lucide-react";
 import { logOut } from "@/service/logOut";
 
@@ -40,6 +40,11 @@ const menuItems = [
     icon: CreditCard,
   },
   {
+    label: "Reviews",
+    href: "/dashboard/reviews",
+    icon: MessageSquare,
+  },
+  {
     label: "Profile",
     href: "/dashboard/profile",
     icon: User,
@@ -52,11 +57,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="min-h-screen bg-background">
       <div className="flex min-h-screen">
-
         {/* Sidebar */}
         <aside className="hidden w-64 shrink-0 border-r bg-card lg:block">
           <div className="sticky top-0 flex h-screen flex-col">
-
             {/* Logo */}
             <div className="border-b p-6">
               <Link
@@ -75,9 +78,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <nav className="flex-1 space-y-1 p-4">
               {menuItems.map((item) => {
                 const Icon = item.icon;
-
-                // Dashboard এর জন্য exact match
-                // অন্য page এর জন্য pathname শুরু হয়েছে কিনা check
                 const isActive =
                   item.href === "/dashboard"
                     ? pathname === "/dashboard"
@@ -111,7 +111,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 Logout
               </button>
             </div>
-
           </div>
         </aside>
 
@@ -121,11 +120,9 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             {children}
           </div>
         </main>
-
       </div>
     </div>
   );
 };
 
 export default DashboardLayout;
-

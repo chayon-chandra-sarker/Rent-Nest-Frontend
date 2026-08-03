@@ -12,6 +12,7 @@ import {
 
 import { getSingleProperty, AdminProperty } from "@/service/property.service";
 import RequestRentalButton from "@/app/(dashboard-group)/_components/tenant/RequestRentalButton";
+import PropertyReviews from "./PropertyReviews";
 
 interface PropertyDetailsPageProps {
   params: Promise<{
@@ -226,7 +227,7 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
               </div>
             </div>
           </div>
-
+            <PropertyReviews propertyId={property.id}></PropertyReviews>
           {/* RIGHT - PRICE CARD */}
 
           <aside className="lg:sticky lg:top-24 lg:h-fit">
