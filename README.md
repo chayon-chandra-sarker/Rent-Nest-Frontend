@@ -15,6 +15,9 @@ https://rent-nest-frontend-xi.vercel.app/
 ### Backend API
 
 https://rent-nest-backend-fiy9.onrender.com/
+### Backend GitHb Link
+
+https://github.com/chayon-chandra-sarker/Rent-Nest-Backend-
 
 ---
 
@@ -770,35 +773,6 @@ Possible future improvements include:
 
 ---
 
-# 📸 Screenshots
-
-Add your project screenshots here:
-
-```md
-## Screenshots
-
-### Home Page
-
-![Home Page](./screenshots/home.png)
-
-### Property Details
-
-![Property Details](./screenshots/property-details.png)
-
-### Tenant Dashboard
-
-![Tenant Dashboard](./screenshots/tenant-dashboard.png)
-
-### Landlord Dashboard
-
-![Landlord Dashboard](./screenshots/landlord-dashboard.png)
-
-### Admin Dashboard
-
-![Admin Dashboard](./screenshots/admin-dashboard.png)
-```
-
----
 
 # 🤝 Contributing
 
@@ -860,9 +834,9 @@ I am passionate about building modern, scalable and user-friendly web applicatio
 
 * Portfolio: https://chayonsarker.vercel.app/
 * GitHub: https://github.com/chayon-chandra-sarker
-* LinkedIn: Add your LinkedIn profile
-* Facebook: Add your Facebook profile
-* Instagram: Add your Instagram profile
+* LinkedIn: https://www.linkedin.com/in/chayon11/
+* Facebook: https://www.facebook.com/chayonsarkerns
+
 
 ---
 
