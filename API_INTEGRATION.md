@@ -9,6 +9,7 @@ This document describes the API integration implemented in the RentNest frontend
 ```text
 https://rent-nest-backend-fiy9.onrender.com
 ```
+🔴 Admin API Integration
 
 | Feature                  | Method | Endpoint                          | Purpose                        |
 | ------------------------ | ------ | --------------------------------- | ------------------------------ |
@@ -21,6 +22,7 @@ https://rent-nest-backend-fiy9.onrender.com
 | View All Categories      | GET    | `/api/category/all-categories`    | Get all property categories    |
 | View All Reviews         | GET    | `/api/review/admin/all-reviews`   | Get all reviews for admin      |
 
+🟢 Landlord API Integration
 
 | Feature               | Method | Endpoint                         | Purpose                                              |
 | --------------------- | ------ | -------------------------------- | ---------------------------------------------------- |
@@ -36,6 +38,7 @@ https://rent-nest-backend-fiy9.onrender.com
 | View Profile          | GET    | `/api/user/profile`              | Get logged-in landlord profile                       |
 | Update Profile        | PUT    | `/api/user/profile`              | Update landlord profile information                  |
 
+🔵 Tenant / User API Integration
 
 | Feature                 | Method | Endpoint                   | Purpose                                 |
 | ----------------------- | ------ | -------------------------- | --------------------------------------- |
@@ -51,6 +54,7 @@ https://rent-nest-backend-fiy9.onrender.com
 | Update Review           | PATCH  | `/api/review/user/:id`     | Update an existing review               |
 | Delete Review           | DELETE | `/api/review/user/:id`     | Delete an existing review               |
 
+💳 Payment / Stripe API
 
 | Feature                 | Method | Endpoint                | Purpose                                                             |
 | ----------------------- | ------ | ----------------------- | ------------------------------------------------------------------- |
