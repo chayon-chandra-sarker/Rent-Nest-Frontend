@@ -37,7 +37,7 @@ interface ReviewResponse {
   data: Review;
 }
 
-interface CreateReviewData {
+export interface CreateReviewData {
   rating: number;
   comment: string;
   propertyId: string;

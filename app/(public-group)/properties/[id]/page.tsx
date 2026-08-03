@@ -10,7 +10,11 @@ import {
   User,
 } from "lucide-react";
 
-import { getSingleProperty, AdminProperty } from "@/service/property.service";
+import {
+  getSingleProperty,
+  AdminProperty,
+} from "@/service/property.service";
+
 import RequestRentalButton from "@/app/(dashboard-group)/_components/tenant/RequestRentalButton";
 import PropertyReviews from "./PropertyReviews";
 
@@ -20,7 +24,9 @@ interface PropertyDetailsPageProps {
   }>;
 }
 
-const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
+const PropertyDetailsPage = async ({
+  params,
+}: PropertyDetailsPageProps) => {
   const { id } = await params;
 
   let property: AdminProperty | null = null;
@@ -32,8 +38,11 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
     console.error("Failed to load property:", error);
 
     errorMessage =
-      error instanceof Error ? error.message : "Failed to load property";
+      error instanceof Error
+        ? error.message
+        : "Failed to load property";
   }
+
 
   if (errorMessage || !property) {
     return (
@@ -55,7 +64,8 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
             </h1>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              {errorMessage || "This property could not be found."}
+              {errorMessage ||
+                "This property could not be found."}
             </p>
           </div>
         </section>
@@ -66,6 +76,7 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
   return (
     <main className="min-h-screen bg-background">
       <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* Back Button */}
         <Link
           href="/properties"
           className="mb-6 inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-semibold transition hover:bg-muted"
@@ -92,13 +103,11 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
             )}
 
             {/* Category */}
-
             <span className="absolute bottom-4 left-4 rounded-full bg-background/90 px-4 py-2 text-sm font-semibold backdrop-blur">
               {property.category.name}
             </span>
 
             {/* Availability */}
-
             <span
               className={`absolute right-4 top-4 rounded-full px-4 py-2 text-sm font-bold ${
                 property.isAvailable
@@ -106,17 +115,17 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
                   : "bg-red-500/90 text-white"
               }`}
             >
-              {property.isAvailable ? "Available" : "Rented"}
+              {property.isAvailable
+                ? "Available"
+                : "Rented"}
             </span>
           </div>
         </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_360px]">
-          {/* LEFT */}
 
           <div className="space-y-8">
             {/* Title */}
-
             <div>
               <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
                 {property.title}
@@ -124,29 +133,40 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
 
               <p className="mt-3 flex items-center gap-2 text-muted-foreground">
                 <MapPin className="size-5 shrink-0 text-primary" />
+
                 {property.location}
               </p>
             </div>
 
             {/* Features */}
-
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {/* Bedrooms */}
               <div className="rounded-2xl border border-border bg-card p-4">
                 <BedDouble className="size-5 text-primary" />
 
-                <p className="mt-3 text-xs text-muted-foreground">Bedrooms</p>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Bedrooms
+                </p>
 
-                <p className="mt-1 text-lg font-bold">{property.bedrooms}</p>
+                <p className="mt-1 text-lg font-bold">
+                  {property.bedrooms}
+                </p>
               </div>
 
+              {/* Bathrooms */}
               <div className="rounded-2xl border border-border bg-card p-4">
                 <Bath className="size-5 text-primary" />
 
-                <p className="mt-3 text-xs text-muted-foreground">Bathrooms</p>
+                <p className="mt-3 text-xs text-muted-foreground">
+                  Bathrooms
+                </p>
 
-                <p className="mt-1 text-lg font-bold">{property.bathrooms}</p>
+                <p className="mt-1 text-lg font-bold">
+                  {property.bathrooms}
+                </p>
               </div>
 
+              {/* Property Type */}
               <div className="rounded-2xl border border-border bg-card p-4">
                 <Building2 className="size-5 text-primary" />
 
@@ -161,9 +181,10 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
             </div>
 
             {/* Description */}
-
             <div>
-              <h2 className="text-xl font-bold">About this property</h2>
+              <h2 className="text-xl font-bold">
+                About this property
+              </h2>
 
               <p className="mt-3 text-sm leading-7 text-muted-foreground">
                 {property.description}
@@ -171,32 +192,39 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
             </div>
 
             {/* Amenities */}
-
             {property.amenities.length > 0 && (
               <div>
-                <h2 className="text-xl font-bold">Amenities</h2>
+                <h2 className="text-xl font-bold">
+                  Amenities
+                </h2>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {property.amenities.map((amenity) => (
-                    <div
-                      key={amenity}
-                      className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-3"
-                    >
-                      <CheckCircle2 className="size-4 text-primary" />
+                  {property.amenities.map(
+                    (amenity) => (
+                      <div
+                        key={amenity}
+                        className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-3"
+                      >
+                        <CheckCircle2 className="size-4 shrink-0 text-primary" />
 
-                      <span className="text-sm font-medium">{amenity}</span>
-                    </div>
-                  ))}
+                        <span className="text-sm font-medium">
+                          {amenity}
+                        </span>
+                      </div>
+                    ),
+                  )}
                 </div>
               </div>
             )}
 
-            {/* Landlord */}
-
+            {/* Property Owner */}
             <div>
-              <h2 className="text-xl font-bold">Property Owner</h2>
+              <h2 className="text-xl font-bold">
+                Property Owner
+              </h2>
 
               <div className="mt-4 flex items-center gap-4 rounded-2xl border border-border bg-card p-5">
+                {/* Owner Image */}
                 <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/10">
                   {property.landlord.image ? (
                     <Image
@@ -211,8 +239,11 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
                   )}
                 </div>
 
+                {/* Owner Info */}
                 <div className="min-w-0">
-                  <p className="font-bold">{property.landlord.name}</p>
+                  <p className="font-bold">
+                    {property.landlord.name}
+                  </p>
 
                   <p className="truncate text-sm text-muted-foreground">
                     {property.landlord.email}
@@ -227,16 +258,19 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
               </div>
             </div>
           </div>
-            <PropertyReviews propertyId={property.id}></PropertyReviews>
-          {/* RIGHT - PRICE CARD */}
 
           <aside className="lg:sticky lg:top-24 lg:h-fit">
             <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
-              <p className="text-sm text-muted-foreground">Monthly Rent</p>
+              <p className="text-sm text-muted-foreground">
+                Monthly Rent
+              </p>
 
               <div className="mt-1">
                 <span className="text-3xl font-extrabold text-primary">
-                  ৳{Number(property.price).toLocaleString()}
+                  ৳
+                  {Number(
+                    property.price,
+                  ).toLocaleString()}
                 </span>
 
                 <span className="ml-1 text-sm text-muted-foreground">
@@ -246,8 +280,11 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
 
               <div className="my-6 border-t border-border" />
 
+              {/* Availability */}
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Availability</span>
+                <span className="text-muted-foreground">
+                  Availability
+                </span>
 
                 <span
                   className={
@@ -256,12 +293,17 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
                       : "font-semibold text-red-500"
                   }
                 >
-                  {property.isAvailable ? "Available" : "Currently Rented"}
+                  {property.isAvailable
+                    ? "Available"
+                    : "Currently Rented"}
                 </span>
               </div>
 
+              {/* Request Rental */}
               {property.isAvailable ? (
-                <RequestRentalButton propertyId={property.id} />
+                <RequestRentalButton
+                  propertyId={property.id}
+                />
               ) : (
                 <button
                   type="button"
@@ -273,10 +315,17 @@ const PropertyDetailsPage = async ({ params }: PropertyDetailsPageProps) => {
               )}
 
               <p className="mt-3 text-center text-xs text-muted-foreground">
-                Contact the landlord before making any payment.
+                Contact the landlord before making any
+                payment.
               </p>
             </div>
           </aside>
+        </div>
+
+        <div className="mt-10">
+          <PropertyReviews
+            propertyId={property.id}
+          />
         </div>
       </section>
     </main>

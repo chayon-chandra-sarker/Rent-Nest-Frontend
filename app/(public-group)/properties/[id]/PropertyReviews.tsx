@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -28,13 +27,13 @@ const PropertyReviews = ({
   propertyId,
 }: PropertyReviewsProps) => {
   const [reviews, setReviews] = useState<Review[]>([]);
+
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-
   const [error, setError] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,10 +49,7 @@ const PropertyReviews = ({
         setReviews(data);
         setCurrentPage(1);
       } catch (error) {
-        console.error(
-          "Failed to fetch reviews:",
-          error,
-        );
+        console.error("Failed to fetch reviews:", error);
 
         setError(
           error instanceof Error
@@ -66,7 +62,7 @@ const PropertyReviews = ({
     };
 
     fetchReviews();
-  }, []);
+  }, [propertyId]);
 
   const propertyReviews = useMemo(() => {
     return reviews.filter(
@@ -80,16 +76,13 @@ const PropertyReviews = ({
     }
 
     const total = propertyReviews.reduce(
-      (sum, review) => sum + review.rating,
+      (sum, review) => sum + Number(review.rating),
       0,
     );
 
     return total / propertyReviews.length;
   }, [propertyReviews]);
 
-  /*
-   * Pagination
-   */
   const totalPages = Math.ceil(
     propertyReviews.length / REVIEWS_PER_PAGE,
   );
@@ -145,18 +138,11 @@ const PropertyReviews = ({
       setRating(0);
       setHoverRating(0);
       setComment("");
-
-      // New review will be visible on first page
       setCurrentPage(1);
 
-      toast.success(
-        "Review submitted successfully.",
-      );
+      toast.success("Review submitted successfully.");
     } catch (error) {
-      console.error(
-        "Failed to submit review:",
-        error,
-      );
+      console.error("Failed to submit review:", error);
 
       toast.error(
         error instanceof Error
@@ -173,7 +159,6 @@ const PropertyReviews = ({
       id="property-reviews"
       className="mt-10 border-t border-border pt-10"
     >
-      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="flex items-center gap-2">
@@ -208,7 +193,6 @@ const PropertyReviews = ({
         )}
       </div>
 
-      {/* Review Form */}
       <div className="mt-6 rounded-2xl border border-border bg-card p-5 sm:p-6">
         <h3 className="font-bold">
           Share your experience
@@ -218,7 +202,8 @@ const PropertyReviews = ({
           onSubmit={handleSubmit}
           className="mt-5 space-y-5"
         >
-          {/* Rating */}
+          {/* RATING */}
+
           <div>
             <p className="mb-2 text-sm font-semibold">
               Your rating
@@ -262,7 +247,8 @@ const PropertyReviews = ({
             </div>
           </div>
 
-          {/* Comment */}
+          {/* COMMENT */}
+
           <div>
             <label
               htmlFor="review-comment"
@@ -283,7 +269,8 @@ const PropertyReviews = ({
             />
           </div>
 
-          {/* Submit */}
+          {/* SUBMIT */}
+
           <button
             type="submit"
             disabled={submitting}
@@ -304,7 +291,6 @@ const PropertyReviews = ({
         </form>
       </div>
 
-      {/* Reviews */}
       <div className="mt-8">
         {loading ? (
           <div className="flex items-center justify-center rounded-2xl border border-border bg-card p-8">
@@ -330,65 +316,78 @@ const PropertyReviews = ({
           </div>
         ) : (
           <>
+            {/* REVIEW CARDS */}
+
             <div className="space-y-4">
-              {currentReviews.map((review) => (
-                <article
-                  key={review.id}
-                  className="rounded-2xl border border-border bg-card p-5 sm:p-6"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary">
-                        {review.tenant.name
-                          .split(" ")
-                          .map((name) => name[0])
-                          .join("")
-                          .slice(0, 2)
-                          .toUpperCase()}
+              {currentReviews.map((review) => {
+                const initials = review.tenant.name
+                  .split(" ")
+                  .map((name) => name[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase();
+
+                return (
+                  <article
+                    key={review.id}
+                    className="rounded-2xl border border-border bg-card p-5 sm:p-6"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      {/* USER */}
+
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/15 text-sm font-bold text-primary">
+                          {initials}
+                        </div>
+
+                        <div className="min-w-0">
+                          <p className="truncate font-bold">
+                            {review.tenant.name}
+                          </p>
+
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(
+                              review.createdAt,
+                            ).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
 
-                      <div className="min-w-0">
-                        <p className="truncate font-bold">
-                          {review.tenant.name}
-                        </p>
+                      {/* RATING */}
 
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(
-                            review.createdAt,
-                          ).toLocaleDateString()}
-                        </p>
+                      <div className="flex shrink-0 gap-0.5">
+                        {Array.from({ length: 5 }).map(
+                          (_, index) => (
+                            <Star
+                              key={index}
+                              className={`size-4 ${
+                                index <
+                                Number(review.rating)
+                                  ? "fill-primary text-primary"
+                                  : "text-muted-foreground"
+                              }`}
+                            />
+                          ),
+                        )}
                       </div>
                     </div>
 
-                    <div className="flex shrink-0 gap-0.5">
-                      {Array.from({ length: 5 }).map(
-                        (_, index) => (
-                          <Star
-                            key={index}
-                            className={`size-4 ${
-                              index < review.rating
-                                ? "fill-primary text-primary"
-                                : "text-muted-foreground"
-                            }`}
-                          />
-                        ),
-                      )}
-                    </div>
-                  </div>
+                    {/* COMMENT */}
 
-                  <p className="mt-4 text-sm leading-7 text-muted-foreground">
-                    {review.comment}
-                  </p>
-                </article>
-              ))}
+                    <p className="mt-4 text-sm leading-7 text-muted-foreground">
+                      {review.comment}
+                    </p>
+                  </article>
+                );
+              })}
             </div>
-
-            {/* Pagination */}
-            <ReviewPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+            {totalPages > 1 && (
+              <ReviewPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            )}
           </>
         )}
       </div>
@@ -397,4 +396,3 @@ const PropertyReviews = ({
 };
 
 export default PropertyReviews;
-

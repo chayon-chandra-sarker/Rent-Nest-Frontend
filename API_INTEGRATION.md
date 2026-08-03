@@ -10,45 +10,49 @@ This document describes the API integration implemented in the RentNest frontend
 https://rent-nest-backend-fiy9.onrender.com
 ```
 
-# API Integration
+| Feature                  | Method | Endpoint                          | Purpose                        |
+| ------------------------ | ------ | --------------------------------- | ------------------------------ |
+| Admin Dashboard          | GET    | `/api/dashboard/admin`            | Get admin dashboard statistics |
+| View All Users           | GET    | `/api/user/admin/all-users`       | Get all tenants and landlords  |
+| Change User Role         | PUT    | `/api/user/admin/update/role/:id` | Change user role by admin      |
+| Block / Unblock User     | PUT    | `/api/user/admin/update/:id`      | Block or unblock user          |
+| View All Rental Requests | GET    | `/api/rental/admin/rentals`       | Get all rental requests        |
+| View All Payments        | GET    | `/api/payment/all-payments`       | Get all rental payments        |
+| View All Categories      | GET    | `/api/category/all-categories`    | Get all property categories    |
+| View All Reviews         | GET    | `/api/review/admin/all-reviews`   | Get all reviews for admin      |
 
-| Frontend Component             | Method | Backend Endpoint                  | Purpose                                             |
-| ------------------------------ | ------ | --------------------------------- | --------------------------------------------------- |
-| Login Form                     | POST   | `/api/auth/login`                 | User login                                          |
-| Register Form                  | POST   | `/api/auth/register`              | User registration                                   |
-| Navbar / Auth                  | GET    | `/api/auth/me`                    | Get logged-in user                                  |
-| Authentication / Refresh Token | POST   | `/api/auth/refresh-token`         | Generate a new access token using the refresh token |
-| Admin Dashboard                | GET    | `/api/dashboard/admin`            | Get admin dashboard statistics                      |
-| Admin Users                    | GET    | `/api/user/admin/all-users`       | Get all users for admin                             |
-| Admin User Role Change         | PUT    | `/api/user/admin/update/role/:id` | Change user role by admin                           |
-| Admin User Block / Unblock     | PUT    | `/api/user/admin/update/:id`      | Block or unblock user by admin                      |
-| Admin User Management          | GET    | `/api/user/admin/all-users`       | Get all users for admin                             |
-| Admin Dashboard Statistics     | GET    | `/api/dashboard/admin`            | Get admin dashboard statistics                      |
-| Admin View All Users | GET | `/api/user/admin/all-users` | Get all tenants and landlords |
-| Admin User Role Change | PUT | `/api/user/admin/update/role/:id` | Change user role by admin |
-| Admin User Block / Unblock | PUT | `/api/user/admin/update/:id` | Block or unblock user by admin |
-| Admin View All Rental Requests | GET | `/api/rental/admin/rentals` | Get all rental requests |
-| Admin View All Payments | GET | `/api/payment/all-payments` | Get all rental payments |
-| Admin View All Categories | GET | `/api/category/all-categories` | Get all property categories |
-| Landlord View My Properties | GET | `/api/property/my-properties` | Get all properties created by the logged-in landlord |
-| Landlord Create Property | POST | `/api/property/create-property` | Create a new rental property |
-| Landlord View Single Property | GET | `/api/property/:id` | Get details of a specific property |
-| Landlord Update Property | PUT | `/api/property/:id` | Update an existing property |
-| Landlord Delete Property | DELETE | `/api/property/:id` | Delete a property |
-| Landlord View Rental Requests | GET | `/api/rental/landlord-requests` | Get rental requests received for landlord properties |
-| Landlord Update Rental Request | PUT | `/api/rental/:id/status` | Approve or reject a rental request |
-| Landlord View Payments | GET | `/api/payment/landlord-payments` | Get payments related to landlord properties |
-| Landlord View Dashboard Stats | GET | `/api/dashboard/landlord` | Get landlord dashboard statistics |
-| Landlord View Profile | GET | `/api/user/profile` | Get logged-in landlord profile |
-| Landlord Update Profile | PUT | `/api/user/profile` | Update landlord profile information |
-| Create Checkout Session | POST | `/api/payment/checkout` | Create a Stripe checkout session for an approved rental |
-| Stripe Webhook | POST | `/api/payment/webhook` | Handle Stripe payment confirmation and update payment/rental status |
-| Get My Payments | GET | `/api/payment/my-payments `| Get logged-in tenant's payment history |
-| Get All Payments | GET | `/api/payment/all-payments` | Get all payments for admin |
-| Get Landlord Payments | GET | `/api/payment/landlord-payments` | Get payments related to landlord's properties |
-| Get All Reviews | GET | `/api/review/admin/all-reviews` | Get all reviews for admin |
-| Get Tenant Reviews | GET | `/api/review/my-reviews` | Get reviews created by the logged-in tenant |
-| Get All Reviews | GET | `/api/review/all-reviews` | Get all reviews for All User |
-| Create Review | POST | `/api/review/create `| Create a review for a user |
-| Update Review | PATCH | `/api/review/user/:id` | Update an existing review |
-| Delete Review | DELETE | `/api/review/user/:id` | Delete an existing review |
+
+| Feature               | Method | Endpoint                         | Purpose                                              |
+| --------------------- | ------ | -------------------------------- | ---------------------------------------------------- |
+| View My Properties    | GET    | `/api/property/my-properties`    | Get properties created by logged-in landlord         |
+| Create Property       | POST   | `/api/property/create-property`  | Create a new rental property                         |
+| View Single Property  | GET    | `/api/property/:id`              | Get property details                                 |
+| Update Property       | PUT    | `/api/property/:id`              | Update an existing property                          |
+| Delete Property       | DELETE | `/api/property/:id`              | Delete a property                                    |
+| View Rental Requests  | GET    | `/api/rental/landlord-requests`  | Get rental requests received for landlord properties |
+| Update Rental Request | PUT    | `/api/rental/:id/status`         | Approve or reject a rental request                   |
+| View Payments         | GET    | `/api/payment/landlord-payments` | Get payments related to landlord properties          |
+| Dashboard Statistics  | GET    | `/api/dashboard/landlord`        | Get landlord dashboard statistics                    |
+| View Profile          | GET    | `/api/user/profile`              | Get logged-in landlord profile                       |
+| Update Profile        | PUT    | `/api/user/profile`              | Update landlord profile information                  |
+
+
+| Feature                 | Method | Endpoint                   | Purpose                                 |
+| ----------------------- | ------ | -------------------------- | --------------------------------------- |
+| User Login              | POST   | `/api/auth/login`          | User login                              |
+| User Registration       | POST   | `/api/auth/register`       | User registration                       |
+| Get Logged-in User      | GET    | `/api/auth/me`             | Get current authenticated user          |
+| Refresh Token           | POST   | `/api/auth/refresh-token`  | Generate a new access token             |
+| View My Payments        | GET    | `/api/payment/my-payments` | Get logged-in tenant's payment history  |
+| Create Checkout Session | POST   | `/api/payment/checkout`    | Create Stripe checkout session          |
+| View All Reviews        | GET    | `/api/review/all-reviews`  | Get all reviews                         |
+| View My Reviews         | GET    | `/api/review/my-reviews`   | Get reviews created by logged-in tenant |
+| Create Review           | POST   | `/api/review/create`       | Create a new review                     |
+| Update Review           | PATCH  | `/api/review/user/:id`     | Update an existing review               |
+| Delete Review           | DELETE | `/api/review/user/:id`     | Delete an existing review               |
+
+
+| Feature                 | Method | Endpoint                | Purpose                                                             |
+| ----------------------- | ------ | ----------------------- | ------------------------------------------------------------------- |
+| Create Checkout Session | POST   | `/api/payment/checkout` | Create Stripe checkout session                                      |
+| Stripe Webhook          | POST   | `/api/payment/webhook`  | Handle Stripe payment confirmation and update payment/rental status |

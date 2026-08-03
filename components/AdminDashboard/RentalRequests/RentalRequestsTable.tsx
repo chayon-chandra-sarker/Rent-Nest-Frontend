@@ -55,10 +55,6 @@ const RentalRequestsTable = () => {
     fetchRequests();
   }, []);
 
-  // ==========================================
-  // PAGINATION
-  // ==========================================
-
   const totalPages = Math.ceil(requests.length / ITEMS_PER_PAGE);
 
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -77,9 +73,6 @@ const RentalRequestsTable = () => {
     });
   };
 
-  // ==========================================
-  // STATUS
-  // ==========================================
 
   const getStatusConfig = (status: string) => {
     switch (status?.toUpperCase()) {
@@ -120,10 +113,6 @@ const RentalRequestsTable = () => {
     });
   };
 
-  // ==========================================
-  // LOADING
-  // ==========================================
-
   if (loading) {
     return (
       <section className="rounded-3xl border border-border/60 bg-card p-12 shadow-sm">
@@ -137,10 +126,6 @@ const RentalRequestsTable = () => {
       </section>
     );
   }
-
-  // ==========================================
-  // ERROR
-  // ==========================================
 
   if (error) {
     return (
@@ -164,10 +149,7 @@ const RentalRequestsTable = () => {
 
   return (
     <section className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm">
-      {/* ==========================================
-          HEADER
-      ========================================== */}
-
+  
       <div className="border-b border-border/60 px-5 py-6 sm:px-7">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
@@ -198,10 +180,6 @@ const RentalRequestsTable = () => {
         </div>
       </div>
 
-      {/* ==========================================
-          EMPTY
-      ========================================== */}
-
       {requests.length === 0 ? (
         <div className="px-6 py-20 text-center">
           <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-muted">
@@ -216,10 +194,6 @@ const RentalRequestsTable = () => {
         </div>
       ) : (
         <>
-          {/* ==========================================
-              DESKTOP TABLE
-          ========================================== */}
-
           <div className="hidden overflow-x-auto xl:block">
             <table className="w-full">
               <thead>
@@ -307,7 +281,7 @@ const RentalRequestsTable = () => {
 
                           <div className="mt-3 flex flex-wrap gap-2">
                             <span className="rounded-lg bg-muted px-2.5 py-1 text-[11px] font-semibold">
-                              {request.property.category.name}
+                              {request.property.category?.name || "Uncategorized"}
                             </span>
 
                             <span className="flex items-center gap-1 rounded-lg bg-muted px-2.5 py-1 text-[11px] font-semibold">
@@ -372,10 +346,6 @@ const RentalRequestsTable = () => {
             </table>
           </div>
 
-          {/* ==========================================
-              MOBILE / TABLET CARDS
-          ========================================== */}
-
           <div className="grid gap-7 p-5 sm:gap-8 sm:p-7 xl:hidden">
             {currentRequests.map((request) => {
               const status = getStatusConfig(request.status);
@@ -385,10 +355,7 @@ const RentalRequestsTable = () => {
                   key={request.id}
                   className="group overflow-hidden rounded-3xl border border-border/70 bg-background shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
                 >
-                  {/* ==============================
-                      TENANT HEADER
-                  ============================== */}
-
+             
                   <div className="border-b border-border/60 bg-card p-5 sm:p-6">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex min-w-0 items-start gap-4">
@@ -423,10 +390,7 @@ const RentalRequestsTable = () => {
                     </div>
                   </div>
 
-                  {/* ==============================
-                      PROPERTY
-                  ============================== */}
-
+            
                   <div className="p-5 sm:p-6">
                     <div className="rounded-2xl border border-border/60 bg-muted/20 p-5">
                       <div className="flex items-start gap-4">
@@ -449,7 +413,7 @@ const RentalRequestsTable = () => {
 
                           <div className="mt-4 flex flex-wrap gap-2">
                             <span className="rounded-lg bg-background px-3 py-1.5 text-[10px] font-bold shadow-sm">
-                              {request.property.category.name}
+                              {request.property.category?.name || "Uncategorized"}
                             </span>
 
                             <span className="flex items-center gap-1 rounded-lg bg-background px-3 py-1.5 text-[10px] font-bold shadow-sm">
@@ -467,10 +431,6 @@ const RentalRequestsTable = () => {
                         </div>
                       </div>
                     </div>
-
-                    {/* ==============================
-                        DETAILS
-                    ============================== */}
 
                     <div className="mt-5 grid grid-cols-2 gap-4">
                       <div className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
@@ -525,10 +485,6 @@ const RentalRequestsTable = () => {
               );
             })}
           </div>
-
-          {/* ==========================================
-              PAGINATION
-          ========================================== */}
 
           {totalPages > 1 && (
             <div className="mt-2 border-t border-border/60 px-5 py-6 sm:px-7">

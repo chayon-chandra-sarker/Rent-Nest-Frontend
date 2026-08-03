@@ -1,4 +1,5 @@
 
+
 export type AdminProperty = {
   id: string;
   landlordId: string;
@@ -211,10 +212,9 @@ export const getLandlordProperties = async (): Promise<
   LandlordProperty[]
 > => {
   const response = await fetch(
-    "https://rent-nest-backend-fiy9.onrender.com/api/property/all-properties",
+         "https://rent-nest-backend-fiy9.onrender.com/api/property/my-properties",
     {
       method: "GET",
-      credentials: "include",
       cache: "no-store",
     }
   );
@@ -224,7 +224,7 @@ export const getLandlordProperties = async (): Promise<
 
   if (!response.ok || !result.success) {
     throw new Error(
-      result.message || "Failed to fetch properties"
+      result.message || "Failed to fetch landlord properties"
     );
   }
 
@@ -310,4 +310,6 @@ export const deleteProperty = async (
     );
   }
 };
+
+
 
