@@ -65,7 +65,7 @@ interface CreatePropertyResponse {
 export const getLandlordProperties =
   async (): Promise<LandlordProperty[]> => {
     const response = await fetch(
-      "/api/landlord/properties",
+      "/api/property/my-properties",
       {
         method: "GET",
         credentials: "include",

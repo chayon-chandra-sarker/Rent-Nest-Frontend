@@ -1,28 +1,31 @@
+
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import {
   CheckCircle2,
   Clock3,
   Loader2,
   MapPin,
-  User,
   XCircle,
 } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
-import { getLandlordRentalRequests, RentalRequest, updateRentalRequest } from "@/service/rental-request.service";
 
+import {
+  getLandlordRentalRequests,
+  RentalRequest,
+  updateRentalRequest,
+} from "@/service/rental-request.service";
 
 const RentalRequestsPage = () => {
   const queryClient = useQueryClient();
 
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-
-  // =========================
-  // GET LANDLORD REQUESTS
-  // =========================
 
   const {
     data: requests = [],
@@ -33,10 +36,6 @@ const RentalRequestsPage = () => {
     queryKey: ["landlord-rental-requests"],
     queryFn: getLandlordRentalRequests,
   });
-
-  // =========================
-  // UPDATE REQUEST
-  // =========================
 
   const updateMutation = useMutation({
     mutationFn: ({
@@ -76,10 +75,6 @@ const RentalRequestsPage = () => {
     },
   });
 
-  // =========================
-  // HANDLE UPDATE
-  // =========================
-
   const handleUpdate = (
     id: string,
     status: "APPROVED" | "REJECTED"
@@ -92,15 +87,11 @@ const RentalRequestsPage = () => {
     });
   };
 
-  // =========================
-  // LOADING
-  // =========================
-
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-background p-6">
-        <div className="mx-auto flex min-h-[400px] max-w-7xl items-center justify-center">
-          <div className="flex items-center gap-2 text-muted-foreground">
+      <main className="min-h-screen bg-background p-4 sm:p-6">
+        <div className="mx-auto flex min-h-[300px] max-w-7xl items-center justify-center">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="size-5 animate-spin" />
             Loading rental requests...
           </div>
@@ -109,13 +100,9 @@ const RentalRequestsPage = () => {
     );
   }
 
-  // =========================
-  // ERROR
-  // =========================
-
   if (isError) {
     return (
-      <main className="min-h-screen bg-background p-6">
+      <main className="min-h-screen bg-background p-4 sm:p-6">
         <div className="mx-auto max-w-7xl">
           <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-8 text-center">
             <XCircle className="mx-auto size-12 text-red-500/60" />
@@ -135,29 +122,25 @@ const RentalRequestsPage = () => {
     );
   }
 
-  // =========================
-  // EMPTY
-  // =========================
-
   if (requests.length === 0) {
     return (
-      <main className="min-h-screen bg-background p-6">
+      <main className="min-h-screen bg-background p-4 sm:p-6">
         <div className="mx-auto max-w-7xl">
           <div className="mb-8">
             <p className="text-sm font-bold uppercase tracking-wider text-primary">
               Landlord Dashboard
             </p>
 
-            <h1 className="mt-2 text-3xl font-extrabold tracking-tight">
+            <h1 className="mt-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
               Rental Requests
             </h1>
 
             <p className="mt-2 text-sm text-muted-foreground">
-              Manage rental requests from tenants.
+              Review and manage tenant rental requests.
             </p>
           </div>
 
-          <div className="rounded-3xl border border-dashed border-border p-12 text-center">
+          <div className="rounded-3xl border border-dashed border-border p-10 text-center">
             <Clock3 className="mx-auto size-12 text-muted-foreground/40" />
 
             <h2 className="mt-4 text-xl font-bold">
@@ -173,25 +156,19 @@ const RentalRequestsPage = () => {
     );
   }
 
-  // =========================
-  // PAGE
-  // =========================
-
   return (
-    <main className="min-h-screen bg-background p-6">
+    <main className="min-h-screen bg-background p-4 sm:p-6">
       <div className="mx-auto max-w-7xl">
-        {/* =========================
-            HEADER
-        ========================= */}
+        {/* HEADER */}
 
-        <div className="mb-8">
+        <div className="mb-6">
           <p className="text-sm font-bold uppercase tracking-wider text-primary">
             Landlord Dashboard
           </p>
 
-          <div className="mt-2 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+          <div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight">
+              <h1 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
                 Rental Requests
               </h1>
 
@@ -200,7 +177,7 @@ const RentalRequestsPage = () => {
               </p>
             </div>
 
-            <div className="rounded-xl border border-border bg-card px-4 py-2">
+            <div className="w-fit rounded-xl border border-border bg-card px-4 py-2">
               <span className="text-sm text-muted-foreground">
                 Total Requests:
               </span>{" "}
@@ -211,271 +188,247 @@ const RentalRequestsPage = () => {
           </div>
         </div>
 
-        {/* =========================
-            REQUEST GRID
-        ========================= */}
+        {/* TABLE */}
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          {requests.map((request) => {
-            const isUpdating =
-              updatingId === request.id;
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[1050px] text-left">
+              {/* TABLE HEAD */}
 
-            return (
-              <article
-                key={request.id}
-                className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition hover:shadow-lg"
-              >
-                {/* =========================
-                    PROPERTY IMAGE
-                ========================= */}
+              <thead className="border-b border-border bg-muted/40">
+                <tr>
+                  <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Property
+                  </th>
 
-                <div className="relative aspect-[16/7] overflow-hidden bg-primary/5">
-                  {request.property.image ? (
-                    <Image
-                      src={request.property.image}
-                      alt={request.property.title}
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <div className="text-center">
-                        <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary/10">
-                          <MapPin className="size-7 text-primary/50" />
-                        </div>
+                  <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Tenant
+                  </th>
 
-                        <p className="mt-2 text-xs text-muted-foreground">
-                          No property image
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                  <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Price
+                  </th>
 
-                  {/* Status */}
+                  <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Requested
+                  </th>
 
-                  <span
-                    className={`absolute right-4 top-4 rounded-full px-3 py-1 text-xs font-bold shadow-sm backdrop-blur ${
-                      request.status === "PENDING"
-                        ? "bg-amber-500/90 text-white"
-                        : request.status === "APPROVED"
-                          ? "bg-emerald-500/90 text-white"
-                          : request.status === "REJECTED"
-                            ? "bg-red-500/90 text-white"
-                            : request.status === "ACTIVE"
-                              ? "bg-blue-500/90 text-white"
-                              : "bg-gray-500/90 text-white"
-                    }`}
-                  >
-                    {request.status}
-                  </span>
-                </div>
+                  <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Property
+                  </th>
 
-                {/* =========================
-                    CONTENT
-                ========================= */}
+                  <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Request
+                  </th>
 
-                <div className="p-5">
-                  {/* Property */}
+                  <th className="px-5 py-4 text-right text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                    Action
+                  </th>
+                </tr>
+              </thead>
 
-                  <div>
-                    <h2 className="text-xl font-bold">
-                      {request.property.title}
-                    </h2>
+              {/* TABLE BODY */}
 
-                    <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <MapPin className="size-4 text-primary" />
-                      {request.property.location}
-                    </p>
-                  </div>
+              <tbody className="divide-y divide-border">
+                {requests.map((request) => {
+                  const isUpdating =
+                    updatingId === request.id;
 
-                  {/* Price */}
+                  return (
+                    <tr
+                      key={request.id}
+                      className="transition-colors hover:bg-muted/20"
+                    >
+                      {/* PROPERTY */}
 
-                  <div className="mt-4">
-                    <span className="text-xl font-extrabold">
-                      ৳
-                      {Number(
-                        request.property.price
-                      ).toLocaleString()}
-                    </span>
-
-                    <span className="ml-1 text-sm text-muted-foreground">
-                      /month
-                    </span>
-                  </div>
-
-                  {/* =========================
-                      TENANT
-                  ========================= */}
-
-                  <div className="mt-5 rounded-xl border border-border bg-muted/30 p-4">
-                    <p className="mb-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                      Tenant Information
-                    </p>
-
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary/10">
-                        {request.tenant.image ? (
-                          <Image
-                            src={request.tenant.image}
-                            alt={request.tenant.name}
-                            width={44}
-                            height={44}
-                            className="size-full object-cover"
-                          />
-                        ) : (
-                          <User className="size-5 text-primary" />
-                        )}
-                      </div>
-
-                      <div className="min-w-0">
-                        <p className="truncate font-bold">
-                          {request.tenant.name}
-                        </p>
-
-                        <p className="truncate text-sm text-muted-foreground">
-                          {request.tenant.email}
-                        </p>
-
-                        {request.tenant.phone && (
-                          <p className="text-xs text-muted-foreground">
-                            {request.tenant.phone}
+                      <td className="px-5 py-4">
+                        <div className="max-w-[220px]">
+                          <p className="truncate font-bold">
+                            {request.property.title}
                           </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* =========================
-                      REQUEST INFO
-                  ========================= */}
+                          <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                            <MapPin className="size-3.5 shrink-0 text-primary" />
 
-                  <div className="mt-4 grid grid-cols-2 gap-3">
-                    <div className="rounded-xl border border-border p-3">
-                      <p className="text-xs text-muted-foreground">
-                        Requested
-                      </p>
+                            <span className="truncate">
+                              {request.property.location}
+                            </span>
+                          </p>
+                        </div>
+                      </td>
 
-                      <p className="mt-1 text-sm font-semibold">
-                        {new Date(
-                          request.requestedAt
-                        ).toLocaleDateString()}
-                      </p>
-                    </div>
+                      {/* TENANT */}
 
-                    <div className="rounded-xl border border-border p-3">
-                      <p className="text-xs text-muted-foreground">
-                        Property Status
-                      </p>
+                      <td className="px-5 py-4">
+                        <div className="max-w-[180px]">
+                          <p className="truncate text-sm font-semibold">
+                            {request.tenant.name}
+                          </p>
 
-                      <p
-                        className={`mt-1 text-sm font-semibold ${
-                          request.property.isAvailable
-                            ? "text-emerald-500"
-                            : "text-red-500"
-                        }`}
-                      >
-                        {request.property.isAvailable
-                          ? "Available"
-                          : "Not Available"}
-                      </p>
-                    </div>
-                  </div>
+                          <p className="truncate text-xs text-muted-foreground">
+                            {request.tenant.email}
+                          </p>
 
-                  {/* =========================
-                      ACTIONS
-                  ========================= */}
+                          {request.tenant.phone && (
+                            <p className="mt-0.5 text-xs text-muted-foreground">
+                              {request.tenant.phone}
+                            </p>
+                          )}
+                        </div>
+                      </td>
 
-                  {request.status === "PENDING" && (
-                    <div className="mt-5 grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleUpdate(
-                            request.id,
-                            "REJECTED"
-                          )
-                        }
-                        disabled={isUpdating}
-                        className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/5 px-4 text-sm font-bold text-red-500 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        {isUpdating &&
-                        updateMutation.variables
-                          ?.status === "REJECTED" ? (
-                          <Loader2 className="size-4 animate-spin" />
-                        ) : (
-                          <XCircle className="size-4" />
-                        )}
+                      {/* PRICE */}
 
-                        Reject
-                      </button>
+                      <td className="whitespace-nowrap px-5 py-4">
+                        <p className="font-bold">
+                          ৳
+                          {Number(
+                            request.property.price
+                          ).toLocaleString()}
+                        </p>
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleUpdate(
-                            request.id,
-                            "APPROVED"
-                          )
-                        }
-                        disabled={isUpdating}
-                        className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        {isUpdating &&
-                        updateMutation.variables
-                          ?.status === "APPROVED" ? (
-                          <Loader2 className="size-4 animate-spin" />
-                        ) : (
-                          <CheckCircle2 className="size-4" />
-                        )}
+                        <p className="text-xs text-muted-foreground">
+                          / month
+                        </p>
+                      </td>
 
-                        Approve
-                      </button>
-                    </div>
-                  )}
+                      {/* REQUESTED DATE */}
 
-                  {/* Approved */}
+                      <td className="whitespace-nowrap px-5 py-4">
+                        <p className="text-sm font-medium">
+                          {new Date(
+                            request.requestedAt
+                          ).toLocaleDateString()}
+                        </p>
+                      </td>
 
-                  {request.status === "APPROVED" && (
-                    <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                      <CheckCircle2 className="size-5" />
-                      Rental Request Approved
-                    </div>
-                  )}
+                      {/* PROPERTY STATUS */}
 
-                  {/* Rejected */}
+                      <td className="px-5 py-4">
+                        <span
+                          className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${
+                            request.property.isAvailable
+                              ? "bg-emerald-500/10 text-emerald-500"
+                              : "bg-red-500/10 text-red-500"
+                          }`}
+                        >
+                          {request.property.isAvailable
+                            ? "Available"
+                            : "Not Available"}
+                        </span>
+                      </td>
 
-                  {request.status === "REJECTED" && (
-                    <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-red-500/10 px-4 py-3 text-sm font-bold text-red-500">
-                      <XCircle className="size-5" />
-                      Rental Request Rejected
-                    </div>
-                  )}
+                      {/* REQUEST STATUS */}
 
-                  {/* Active */}
+                      <td className="px-5 py-4">
+                        <span
+                          className={`inline-flex whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ${
+                            request.status === "PENDING"
+                              ? "bg-amber-500/10 text-amber-500"
+                              : request.status === "APPROVED"
+                                ? "bg-emerald-500/10 text-emerald-500"
+                                : request.status === "REJECTED"
+                                  ? "bg-red-500/10 text-red-500"
+                                  : request.status === "ACTIVE"
+                                    ? "bg-blue-500/10 text-blue-500"
+                                    : "bg-muted text-muted-foreground"
+                          }`}
+                        >
+                          {request.status}
+                        </span>
+                      </td>
 
-                  {request.status === "ACTIVE" && (
-                    <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-blue-500/10 px-4 py-3 text-sm font-bold text-blue-500">
-                      <CheckCircle2 className="size-5" />
-                      Rental is Active
-                    </div>
-                  )}
+                      {/* ACTION */}
 
-                  {/* Completed */}
+                      <td className="px-5 py-4">
+                        <div className="flex justify-end gap-2">
+                          {request.status === "PENDING" ? (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleUpdate(
+                                    request.id,
+                                    "REJECTED"
+                                  )
+                                }
+                                disabled={isUpdating}
+                                className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg border border-red-500/30 bg-red-500/5 px-3 text-xs font-bold text-red-500 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                {isUpdating &&
+                                updateMutation.variables
+                                  ?.status ===
+                                  "REJECTED" ? (
+                                  <Loader2 className="size-3.5 animate-spin" />
+                                ) : (
+                                  <XCircle className="size-3.5" />
+                                )}
 
-                  {request.status === "COMPLETED" && (
-                    <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-muted px-4 py-3 text-sm font-bold text-muted-foreground">
-                      Rental Completed
-                    </div>
-                  )}
-                </div>
-              </article>
-            );
-          })}
+                                Reject
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleUpdate(
+                                    request.id,
+                                    "APPROVED"
+                                  )
+                                }
+                                disabled={isUpdating}
+                                className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 text-xs font-bold text-primary-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                              >
+                                {isUpdating &&
+                                updateMutation.variables
+                                  ?.status ===
+                                  "APPROVED" ? (
+                                  <Loader2 className="size-3.5 animate-spin" />
+                                ) : (
+                                  <CheckCircle2 className="size-3.5" />
+                                )}
+
+                                Approve
+                              </button>
+                            </>
+                          ) : request.status === "APPROVED" ? (
+                            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-emerald-500/10 px-3 py-2 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                              <CheckCircle2 className="size-3.5" />
+                              Approved
+                            </span>
+                          ) : request.status === "REJECTED" ? (
+                            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-red-500/10 px-3 py-2 text-xs font-bold text-red-500">
+                              <XCircle className="size-3.5" />
+                              Rejected
+                            </span>
+                          ) : request.status === "ACTIVE" ? (
+                            <span className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-blue-500/10 px-3 py-2 text-xs font-bold text-blue-500">
+                              <CheckCircle2 className="size-3.5" />
+                              Active
+                            </span>
+                          ) : (
+                            <span className="text-xs font-semibold text-muted-foreground">
+                              Completed
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
+
+        {/* MOBILE NOTE */}
+
+        <p className="mt-3 text-xs text-muted-foreground sm:hidden">
+          Swipe horizontally to view all rental request details.
+        </p>
       </div>
     </main>
   );
 };
 
 export default RentalRequestsPage;
+

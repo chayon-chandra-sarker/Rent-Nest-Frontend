@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -15,7 +14,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { logOut } from "@/service/logOut";
-
 
 type IUserData = {
   id: string;
@@ -41,29 +39,18 @@ type NavbarProps = {
   user: IUser;
 };
 
-
 type ProfileImageProps = {
   image?: string | null;
   name?: string;
   size: "small" | "medium" | "large";
 };
 
-const ProfileImage = ({
-  image,
-  name,
-  size,
-}: ProfileImageProps) => {
+const ProfileImage = ({ image, name, size }: ProfileImageProps) => {
   const [imageError, setImageError] = useState(false);
 
-  const imageSize =
-    size === "small"
-      ? 32
-      : size === "medium"
-        ? 40
-        : 44;
+  const imageSize = size === "small" ? 32 : size === "medium" ? 40 : 44;
 
-  const avatarLetter =
-    name?.trim()?.charAt(0)?.toUpperCase() || "U";
+  const avatarLetter = name?.trim()?.charAt(0)?.toUpperCase() || "U";
 
   /* No image or broken image */
   if (!image || imageError) {
@@ -87,7 +74,6 @@ const ProfileImage = ({
   );
 };
 
-
 const navLinks = [
   {
     label: "Browse",
@@ -106,6 +92,22 @@ const navLinks = [
     href: "/#testimonials",
   },
 ];
+
+const getProfilePath = (role: string) => {
+  switch (role.toUpperCase()) {
+    case "ADMIN":
+      return "/admin-dashboard/profile";
+
+    case "LANDLORD":
+      return "/land-lord-dashboard/profile";
+
+    case "TENANT":
+      return "/dashboard/profile";
+
+    default:
+      return "/dashboard/profile";
+  }
+};
 
 const getDashboardPath = (role: string) => {
   switch (role.toUpperCase()) {
@@ -127,13 +129,11 @@ export function SiteHeader({ user }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const [updatedProfile, setUpdatedProfile] =
-    useState<IUserData | null>(null);
+  const [updatedProfile, setUpdatedProfile] = useState<IUserData | null>(null);
 
   useEffect(() => {
     const handleProfileUpdate = (event: Event) => {
-      const customEvent =
-        event as CustomEvent<IUserData>;
+      const customEvent = event as CustomEvent<IUserData>;
 
       if (!customEvent.detail) {
         return;
@@ -142,50 +142,31 @@ export function SiteHeader({ user }: NavbarProps) {
       setUpdatedProfile(customEvent.detail);
     };
 
-    window.addEventListener(
-      "profile-updated",
-      handleProfileUpdate,
-    );
+    window.addEventListener("profile-updated", handleProfileUpdate);
 
     return () => {
-      window.removeEventListener(
-        "profile-updated",
-        handleProfileUpdate,
-      );
+      window.removeEventListener("profile-updated", handleProfileUpdate);
     };
   }, []);
 
-  const effectiveUserData =
-    updatedProfile
-      ? {
-          ...user.data,
-          ...updatedProfile,
-        }
-      : user.data;
+  const effectiveUserData = updatedProfile
+    ? {
+        ...user.data,
+        ...updatedProfile,
+      }
+    : user.data;
 
-  const isLoggedIn =
-    user?.success === true &&
-    !!user?.data;
+  const isLoggedIn = user?.success === true && !!user?.data;
 
-  const profileImage =
-    isLoggedIn
-      ? effectiveUserData.image
-      : null;
+  const profileImage = isLoggedIn ? effectiveUserData.image : null;
 
-  const profileName =
-    isLoggedIn
-      ? effectiveUserData.name
-      : "Guest User";
+  const profileName = isLoggedIn ? effectiveUserData.name : "Guest User";
 
-  const profileEmail =
-    isLoggedIn
-      ? effectiveUserData.email
-      : "Please login to continue";
+  const profileEmail = isLoggedIn
+    ? effectiveUserData.email
+    : "Please login to continue";
 
-  const profileRole =
-    isLoggedIn
-      ? effectiveUserData.role
-      : "";
+  const profileRole = isLoggedIn ? effectiveUserData.role : "";
 
   const handleLogout = async () => {
     try {
@@ -203,11 +184,7 @@ export function SiteHeader({ user }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="flex h-16 w-full items-center justify-between px-1">
-
-        <Link
-          href="/"
-          className="flex items-center gap-2"
-        >
+        <Link href="/" className="flex items-center gap-2">
           <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
             <Home className="size-5" />
           </span>
@@ -232,9 +209,7 @@ export function SiteHeader({ user }: NavbarProps) {
         <div className="relative hidden md:block">
           <button
             type="button"
-            onClick={() =>
-              setIsProfileOpen((value) => !value)
-            }
+            onClick={() => setIsProfileOpen((value) => !value)}
             className="relative size-10 overflow-hidden rounded-xl border border-border bg-primary/10 transition hover:ring-2 hover:ring-primary/30"
             aria-label="Open profile menu"
             aria-expanded={isProfileOpen}
@@ -253,15 +228,12 @@ export function SiteHeader({ user }: NavbarProps) {
             )}
           </button>
 
-
           {isProfileOpen && (
             <div className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-border bg-background p-2 shadow-xl">
-
               {/* USER INFO */}
 
               <div className="border-b border-border px-3 py-3">
                 <div className="flex items-center gap-3">
-
                   {/* AVATAR */}
 
                   <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-primary/10">
@@ -305,14 +277,11 @@ export function SiteHeader({ user }: NavbarProps) {
 
               {isLoggedIn && (
                 <div className="py-2">
-
                   {/* PROFILE */}
 
                   <Link
-                    href="/profile"
-                    onClick={() =>
-                      setIsProfileOpen(false)
-                    }
+                    href={getProfilePath(profileRole)}
+                    onClick={() => setIsProfileOpen(false)}
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition hover:bg-muted"
                   >
                     <User className="size-4" />
@@ -323,9 +292,7 @@ export function SiteHeader({ user }: NavbarProps) {
 
                   <Link
                     href={getDashboardPath(profileRole)}
-                    onClick={() =>
-                      setIsProfileOpen(false)
-                    }
+                    onClick={() => setIsProfileOpen(false)}
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-foreground transition hover:bg-primary/10 hover:text-primary"
                   >
                     <LayoutDashboard className="size-4" />
@@ -349,9 +316,7 @@ export function SiteHeader({ user }: NavbarProps) {
                 ) : (
                   <Link
                     href="/login"
-                    onClick={() =>
-                      setIsProfileOpen(false)
-                    }
+                    onClick={() => setIsProfileOpen(false)}
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-foreground transition hover:bg-muted"
                   >
                     <LogIn className="size-4" />
@@ -370,31 +335,20 @@ export function SiteHeader({ user }: NavbarProps) {
             setIsProfileOpen(false);
           }}
           className="inline-flex size-10 items-center justify-center rounded-xl border border-border text-foreground transition hover:bg-muted md:hidden"
-          aria-label={
-            open
-              ? "Close menu"
-              : "Open menu"
-          }
+          aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
         >
-          {open ? (
-            <X className="size-5" />
-          ) : (
-            <Menu className="size-5" />
-          )}
+          {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
       </div>
 
       <div
         className={cn(
           "overflow-hidden border-t border-border/60 bg-background transition-all duration-300 md:hidden",
-          open
-            ? "max-h-[700px]"
-            : "max-h-0 border-t-0",
+          open ? "max-h-[700px]" : "max-h-0 border-t-0",
         )}
       >
         <div className="flex flex-col gap-1 px-4 py-4">
-
           {/* NAVIGATION */}
 
           {navLinks.map((link) => (
@@ -411,19 +365,13 @@ export function SiteHeader({ user }: NavbarProps) {
           {/* ACCOUNT */}
 
           <div className="mt-2 border-t border-border pt-3">
-
             <button
               type="button"
-              onClick={() =>
-                setIsProfileOpen(
-                  (value) => !value,
-                )
-              }
+              onClick={() => setIsProfileOpen((value) => !value)}
               className="flex w-full items-center justify-between rounded-xl border border-border px-4 py-3 text-sm font-semibold text-foreground transition hover:bg-muted"
               aria-expanded={isProfileOpen}
             >
               <span className="flex min-w-0 items-center gap-3">
-
                 {/* MOBILE AVATAR */}
 
                 <div className="relative size-8 shrink-0 overflow-hidden rounded-full bg-primary/10">
@@ -442,17 +390,14 @@ export function SiteHeader({ user }: NavbarProps) {
                 </div>
 
                 <span className="truncate">
-                  {isLoggedIn
-                    ? profileName
-                    : "Account"}
+                  {isLoggedIn ? profileName : "Account"}
                 </span>
               </span>
 
               <ChevronDown
                 className={cn(
                   "size-4 shrink-0 transition-transform duration-200",
-                  isProfileOpen &&
-                    "rotate-180",
+                  isProfileOpen && "rotate-180",
                 )}
               />
             </button>
@@ -461,12 +406,10 @@ export function SiteHeader({ user }: NavbarProps) {
 
             {isProfileOpen && (
               <div className="mt-2 overflow-hidden rounded-xl border border-border bg-muted/30 p-2">
-
                 {/* USER INFO */}
 
                 <div className="border-b border-border px-3 py-3">
                   <div className="flex items-center gap-3">
-
                     {/* AVATAR */}
 
                     <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-primary/10">
@@ -510,11 +453,10 @@ export function SiteHeader({ user }: NavbarProps) {
 
                 {isLoggedIn && (
                   <div className="py-2">
-
                     {/* PROFILE */}
 
                     <Link
-                      href="/profile"
+                      href={getProfilePath(profileRole)}
                       onClick={closeMobileMenu}
                       className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm text-foreground transition hover:bg-muted"
                     >
@@ -566,4 +508,3 @@ export function SiteHeader({ user }: NavbarProps) {
     </header>
   );
 }
-

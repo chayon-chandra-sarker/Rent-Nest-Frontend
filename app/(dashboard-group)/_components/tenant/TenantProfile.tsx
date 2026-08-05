@@ -9,7 +9,6 @@ import ProfileHeader from "./profile/ProfileHeader";
 import PersonalInformation from "./profile/PersonalInformation";
 import AccountInformation from "./profile/AccountInformation";
 
-
 import ProfileEditForm from "./profile/ProfileEditForm";
 import BecomeLandlordCard from "./profile/BecomeLandlordCard";
 
@@ -78,40 +77,50 @@ const TenantProfile = () => {
   }
 
   return (
-  <section className="space-y-6">
-    <div className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm">
-      <ProfileHeader
-        profile={profile}
-        imageError={imageError}
-        setImageError={setImageError}
-      />
-    </div>
+    <section className="space-y-6">
+      <div className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm">
+        <ProfileHeader
+          profile={profile}
+          imageError={imageError}
+          setImageError={setImageError}
+        />
+      </div>
 
-    <BecomeLandlordCard
-      role={profile.role}
-    />
+      <BecomeLandlordCard role={profile.role} />
 
-    {isEditing && (
-      <ProfileEditForm
+      {isEditing && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setIsEditing(false);
+            }
+          }}
+        >
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-border/60 bg-card shadow-2xl">
+            <ProfileEditForm
+              profile={profile}
+              onClose={() => setIsEditing(false)}
+              onUpdated={(updatedProfile) => {
+                setProfile(updatedProfile);
+                setImageError(false);
+                setIsEditing(false);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      <PersonalInformation
         profile={profile}
-        onClose={() => setIsEditing(false)}
-        onUpdated={(updatedProfile) => {
-          setProfile(updatedProfile);
-          setImageError(false);
+        onEdit={() => {
+          setIsEditing(true);
         }}
       />
-    )}
 
-    <PersonalInformation
-      profile={profile}
-      onEdit={() => {
-        setIsEditing(true);
-      }}
-    />
-
-    <AccountInformation profile={profile} />
-  </section>
-);
+      <AccountInformation profile={profile} />
+    </section>
+  );
 };
 
 export default TenantProfile;

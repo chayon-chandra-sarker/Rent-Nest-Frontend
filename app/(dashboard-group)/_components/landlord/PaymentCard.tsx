@@ -3,7 +3,6 @@
 import {
   CalendarDays,
   CheckCircle2,
-  CreditCard,
   MapPin,
   ReceiptText,
   UserRound,
@@ -32,143 +31,172 @@ const formatDate = (date: string | null) => {
 
 const PaymentCard = ({ payment }: PaymentCardProps) => {
   return (
-    <article className="group overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-xl">
-      {/* TOP */}
-      <div className="p-5">
-        <div className="flex flex-col gap-5">
-          {/* PROPERTY */}
+    <div className="w-full overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm">
+      {/* TABLE SCROLL CONTAINER */}
+      <div className="max-h-[600px] overflow-auto">
+        <table className="w-full min-w-[1000px] text-left">
+          {/* TABLE HEADER */}
+          <thead className="sticky top-0 z-10 border-b border-border bg-card">
+            <tr>
+              <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Property
+              </th>
 
-          <div className="flex items-start gap-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-105">
-              <CreditCard className="size-6" />
-            </div>
-
-            <div className="min-w-0">
-              <h2 className="truncate text-lg font-bold">
-                {payment.property.title}
-              </h2>
-
-              <div className="mt-1.5 flex items-center gap-1.5 text-sm text-muted-foreground">
-                <MapPin className="size-4 shrink-0 text-primary" />
-
-                <span className="truncate">
-                  {payment.property.location}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* AMOUNT */}
-
-          <div className="rounded-2xl border border-primary/10 bg-primary/5 p-4">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              Amount Received
-            </p>
-
-            <div className="flex items-center justify-between gap-3">
-              <p className="mt-1 text-2xl font-black text-primary">
-                {payment.currency}{" "}
-                {Number(payment.amount).toLocaleString()}
-              </p>
-
-              <span
-                className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold ${
-                  payment.status === "COMPLETED"
-                    ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
-                    : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                }`}
-              >
-                <span
-                  className={`size-1.5 rounded-full ${
-                    payment.status === "COMPLETED"
-                      ? "bg-emerald-500"
-                      : "bg-amber-500"
-                  }`}
-                />
-
-                {payment.status}
-              </span>
-            </div>
-          </div>
-
-          {/* TENANT */}
-
-          <div className="flex items-center gap-3 rounded-2xl bg-muted/30 p-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-background text-primary shadow-sm">
-              <UserRound className="size-4" />
-            </div>
-
-            <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Tenant
-              </p>
+              </th>
 
-              <p className="mt-0.5 truncate text-sm font-bold">
-                {payment.tenant.name}
-              </p>
+              <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Amount
+              </th>
 
-              <p className="truncate text-xs text-muted-foreground">
-                {payment.tenant.email}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+              <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Status
+              </th>
 
-      {/* DETAILS */}
-
-      <div className="border-t border-border/60 bg-muted/10 p-4">
-        <div className="space-y-3">
-          {/* TRANSACTION ID */}
-
-          <div className="rounded-2xl border border-border/60 bg-card p-3.5">
-            <div className="flex items-center gap-2">
-              <ReceiptText className="size-4 text-primary" />
-
-              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Transaction ID
-              </p>
-            </div>
+              </th>
 
-            <p className="mt-2 break-all font-mono text-[11px] font-medium">
-              {payment.transactionId}
-            </p>
-          </div>
+              <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Created
+              </th>
 
-          {/* DATES */}
+              <th className="px-5 py-4 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                Paid
+              </th>
+            </tr>
+          </thead>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-border/60 bg-card p-3.5">
-              <div className="flex items-center gap-2">
-                <CalendarDays className="size-4 text-primary" />
+          {/* TABLE BODY */}
+          <tbody>
+            <tr className="border-b border-border/50 transition-colors last:border-0 hover:bg-muted/20">
+              {/* PROPERTY */}
+              <td className="px-5 py-5">
+                <div className="flex items-start gap-3">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <ReceiptText className="size-4" />
+                  </div>
 
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                  Created
+                  <div className="min-w-0 max-w-[190px]">
+                    <p className="truncate text-sm font-bold">
+                      {payment.property.title}
+                    </p>
+
+                    <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                      <MapPin className="size-3.5 shrink-0 text-primary" />
+
+                      <span className="truncate">
+                        {payment.property.location}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </td>
+
+              {/* TENANT */}
+              <td className="px-5 py-5">
+                <div className="flex items-center gap-3">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <UserRound className="size-4" />
+                  </div>
+
+                  <div className="min-w-0 max-w-[180px]">
+                    <p className="truncate text-sm font-bold">
+                      {payment.tenant.name}
+                    </p>
+
+                    <p className="truncate text-xs text-muted-foreground">
+                      {payment.tenant.email}
+                    </p>
+                  </div>
+                </div>
+              </td>
+
+              {/* AMOUNT */}
+              <td className="whitespace-nowrap px-5 py-5">
+                <p className="text-lg font-black text-primary">
+                  {payment.currency} {Number(payment.amount).toLocaleString()}
                 </p>
-              </div>
 
-              <p className="mt-2 text-xs font-semibold">
-                {formatDate(payment.createdAt)}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-border/60 bg-card p-3.5">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="size-4 text-emerald-500" />
-
-                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                  Paid
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  Amount Received
                 </p>
-              </div>
+              </td>
 
-              <p className="mt-2 text-xs font-semibold">
-                {formatDate(payment.paidAt)}
-              </p>
-            </div>
-          </div>
-        </div>
+              {/* STATUS */}
+              <td className="px-5 py-5">
+                <span
+                  className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold ${
+                    payment.status === "COMPLETED"
+                      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      : "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                  }`}
+                >
+                  <span
+                    className={`size-1.5 rounded-full ${
+                      payment.status === "COMPLETED"
+                        ? "bg-emerald-500"
+                        : "bg-amber-500"
+                    }`}
+                  />
+
+                  {payment.status}
+                </span>
+              </td>
+
+              {/* TRANSACTION ID */}
+              <td className="px-5 py-5">
+                <div className="flex items-center gap-2">
+                  <ReceiptText className="size-4 shrink-0 text-primary" />
+
+                  <p
+                    className="max-w-[180px] truncate font-mono text-[11px] font-medium"
+                    title={payment.transactionId}
+                  >
+                    {payment.transactionId}
+                  </p>
+                </div>
+              </td>
+
+              {/* CREATED */}
+              <td className="px-5 py-5">
+                <div className="flex items-start gap-2">
+                  <CalendarDays className="mt-0.5 size-4 shrink-0 text-primary" />
+
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                      Created
+                    </p>
+
+                    <p className="mt-1 whitespace-nowrap text-xs font-semibold">
+                      {formatDate(payment.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              </td>
+
+              {/* PAID */}
+              <td className="px-5 py-5">
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                      Paid
+                    </p>
+
+                    <p className="mt-1 whitespace-nowrap text-xs font-semibold">
+                      {formatDate(payment.paidAt)}
+                    </p>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </article>
+    </div>
   );
 };
 

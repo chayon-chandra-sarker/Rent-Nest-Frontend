@@ -18,7 +18,7 @@ export async function GET() {
     }
 
     const response = await fetch(
-      "https://rent-nest-backend-fiy9.onrender.com/api/property/all-properties",
+      "https://rent-nest-backend-fiy9.onrender.com/api/property/my-properties",
       {
         method: "GET",
         headers: {

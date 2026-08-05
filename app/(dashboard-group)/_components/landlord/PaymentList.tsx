@@ -1,15 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import {
-  CheckCircle2,
-  WalletCards,
-} from "lucide-react";
+import { CheckCircle2, WalletCards } from "lucide-react";
 
 import type { Payment } from "@/service/payment.service";
 import PaymentCard from "./PaymentCard";
 import PaymentPagination from "./PaymentPagination";
-
 
 interface PaymentListProps {
   payments: Payment[];
@@ -21,24 +17,21 @@ const PaymentList = ({ payments }: PaymentListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const completedPayments = payments.filter(
-    (payment) => payment.status === "COMPLETED"
+    (payment) => payment.status === "COMPLETED",
   );
 
   const totalReceived = completedPayments.reduce(
     (total, payment) => total + Number(payment.amount),
-    0
+    0,
   );
 
-  const totalPages = Math.ceil(
-    payments.length / ITEMS_PER_PAGE
-  );
+  const totalPages = Math.ceil(payments.length / ITEMS_PER_PAGE);
 
-  const startIndex =
-    (currentPage - 1) * ITEMS_PER_PAGE;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 
   const currentPayments = payments.slice(
     startIndex,
-    startIndex + ITEMS_PER_PAGE
+    startIndex + ITEMS_PER_PAGE,
   );
 
   return (
@@ -57,8 +50,7 @@ const PaymentList = ({ payments }: PaymentListProps) => {
           </h1>
 
           <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground sm:text-base">
-            Track payments received from tenants for
-            your rental properties.
+            Track payments received from tenants for your rental properties.
           </p>
         </div>
 
@@ -67,9 +59,7 @@ const PaymentList = ({ payments }: PaymentListProps) => {
             Total Transactions
           </p>
 
-          <p className="mt-1 text-2xl font-black">
-            {payments.length}
-          </p>
+          <p className="mt-1 text-2xl font-black">{payments.length}</p>
         </div>
       </div>
 
@@ -129,25 +119,20 @@ const PaymentList = ({ payments }: PaymentListProps) => {
             <WalletCards className="size-7 text-muted-foreground" />
           </div>
 
-          <h2 className="mt-5 text-lg font-bold">
-            No payments found
-          </h2>
+          <h2 className="mt-5 text-lg font-bold">No payments found</h2>
 
           <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-            Payments from your tenants will appear here
-            after successful transactions.
+            Payments from your tenants will appear here after successful
+            transactions.
           </p>
         </div>
       ) : (
         <>
           {/* ================= PAYMENT CARDS ================= */}
 
-          <div className="grid gap-5 md:grid-cols-2">
+          <div className="w-full">
             {currentPayments.map((payment) => (
-              <PaymentCard
-                key={payment.id}
-                payment={payment}
-              />
+              <PaymentCard key={payment.id} payment={payment} />
             ))}
           </div>
 
