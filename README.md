@@ -436,42 +436,6 @@ RentNest implements several security mechanisms:
 * Server-side authorization checks
 * Environment variables for sensitive credentials
 
----
-
-# ⚙️ Environment Variables
-
-## Frontend `.env.local`
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
-```
-
-For production:
-
-```env
-NEXT_PUBLIC_API_URL=https://rent-nest-backend-fiy9.onrender.com
-```
-
----
-
-## Backend `.env`
-
-```env
-PORT=5000
-
-DATABASE_URL="your_postgresql_database_url"
-
-JWT_ACCESS_SECRET="your_access_secret"
-JWT_REFRESH_SECRET="your_refresh_secret"
-
-STRIPE_SECRET_KEY="your_stripe_secret_key"
-
-FRONTEND_URL="http://localhost:3000"
-```
-
-> Never commit `.env` files or secret keys to GitHub.
-
----
 
 # 🚀 Installation & Setup
 
