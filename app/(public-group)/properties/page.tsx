@@ -55,59 +55,61 @@ const PropertiesPage = async ({
         : "Failed to load properties";
   }
 
-  const filteredProperties = properties.filter((property) => {
-    const locationMatch =
-      !location ||
-      property.location
-        .toLowerCase()
-        .includes(location.toLowerCase());
+const filteredProperties = properties.filter((property) => {
+  const locationMatch =
+    !location ||
+    property.location
+      .toLowerCase()
+      .includes(location.toLowerCase());
 
-    const categoryMatch =
-      !category ||
-      property.category.name
-        .toLowerCase()
-        .includes(category.toLowerCase());
+  // Supports both category ID and category name
+  const categoryMatch =
+    !category ||
+    property.category.id === category ||
+    property.category.name
+      .toLowerCase()
+      .includes(category.toLowerCase());
 
-    let priceMatch = true;
+  let priceMatch = true;
 
-    const propertyPrice = Number(property.price);
+  const propertyPrice = Number(property.price);
 
-    if (price === "$500 – $1,000") {
-      priceMatch =
-        propertyPrice >= 500 &&
-        propertyPrice <= 1000;
-    }
+  if (price === "$500 – $1,000") {
+    priceMatch =
+      propertyPrice >= 500 &&
+      propertyPrice <= 1000;
+  }
 
-    if (price === "$1,000 – $2,000") {
-      priceMatch =
-        propertyPrice > 1000 &&
-        propertyPrice <= 2000;
-    }
+  if (price === "$1,000 – $2,000") {
+    priceMatch =
+      propertyPrice > 1000 &&
+      propertyPrice <= 2000;
+  }
 
-    if (price === "$2,000 – $3,500") {
-      priceMatch =
-        propertyPrice > 2000 &&
-        propertyPrice <= 3500;
-    }
+  if (price === "$2,000 – $3,500") {
+    priceMatch =
+      propertyPrice > 2000 &&
+      propertyPrice <= 3500;
+  }
 
-    if (price === "$3,500+") {
-      priceMatch = propertyPrice > 3500;
-    }
+  if (price === "$3,500+") {
+    priceMatch = propertyPrice > 3500;
+  }
 
-    const availabilityMatch =
-      availability === "all"
-        ? true
-        : availability === "available"
-          ? property.isAvailable
-          : !property.isAvailable;
+  const availabilityMatch =
+    availability === "all"
+      ? true
+      : availability === "available"
+        ? property.isAvailable
+        : !property.isAvailable;
 
-    return (
-      locationMatch &&
-      categoryMatch &&
-      priceMatch &&
-      availabilityMatch
-    );
-  });
+  return (
+    locationMatch &&
+    categoryMatch &&
+    priceMatch &&
+    availabilityMatch
+  );
+});
 
   const sortedProperties = [...filteredProperties];
 
