@@ -4,9 +4,9 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import { getMe } from "@/service/getMe";
-import { SiteHeader } from "@/components/shared/SiteHeader";
 import { SiteFooter } from "@/components/shared/SiteFooter";
 import QueryProvider from "@/providers/QueryProvider";
+import { SiteHeader } from "@/components/navbar/SiteHeader";
 
 const inter = Inter({
   subsets: ["latin"],
