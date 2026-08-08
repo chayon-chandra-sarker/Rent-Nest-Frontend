@@ -383,6 +383,8 @@ const PropertiesPage = async ({
                       </span>
                     </p>
 
+                    
+
                     <div className="mt-4 flex items-center gap-5 border-t border-border pt-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1.5">
                         <BedDouble className="size-4" />

@@ -1,21 +1,25 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 const navLinks = [
   {
-    label: "Browse",
-    href: "/#featured",
+    label: "Home",
+    href: "/",
   },
   {
     label: "Categories",
-    href: "/#categories",
+    href: "/categories",
   },
   {
-    label: "How it works",
-    href: "/#how-it-works",
+    label: "How It Works",
+    href: "/how-it-works",
   },
   {
     label: "Testimonials",
-    href: "/#testimonials",
+    href: "/testimonials",
   },
 ];
 
@@ -24,29 +28,87 @@ type NavLinksProps = {
   mobile?: boolean;
 };
 
-const NavLinks = ({ onClick, mobile = false }: NavLinksProps) => {
+const NavLinks = ({
+  onClick,
+  mobile = false,
+}: NavLinksProps) => {
+  const pathname = usePathname();
+
+  if (mobile) {
+    return (
+      <nav className="flex flex-col gap-1.5">
+        {navLinks.map((link) => {
+          const isActive =
+            pathname === link.href ||
+            pathname.startsWith(`${link.href}/`);
+
+          return (
+            <Link
+              key={link.label}
+              href={link.href}
+              onClick={onClick}
+              className={cn(
+                "group relative overflow-hidden rounded-xl px-4 py-3 text-[15px] font-semibold transition-all duration-300",
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-[0_6px_20px_rgba(0,220,229,0.25)]"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              <span className="relative z-10">
+                {link.label}
+              </span>
+
+              {isActive && (
+                <span className="absolute right-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-l-full bg-primary-foreground/80" />
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+    );
+  }
+
   return (
-    <nav
-      className={
-        mobile
-          ? "flex flex-col gap-1"
-          : "hidden items-center gap-7 md:flex"
-      }
-    >
-      {navLinks.map((link) => (
-        <Link
-          key={link.label}
-          href={link.href}
-          onClick={onClick}
-          className={
-            mobile
-              ? "rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground"
-              : "text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          }
-        >
-          {link.label}
-        </Link>
-      ))}
+    <nav className="hidden items-center gap-1 rounded-2xl border border-border/60 bg-muted/30 p-1.5 shadow-sm backdrop-blur-md md:flex">
+      {navLinks.map((link) => {
+        const isActive =
+          pathname === link.href ||
+          pathname.startsWith(`${link.href}/`);
+
+        return (
+          <Link
+            key={link.label}
+            href={link.href}
+            onClick={onClick}
+            className={cn(
+              "group relative overflow-hidden rounded-xl px-5 py-3 text-[15px] font-semibold tracking-[-0.01em] transition-all duration-300",
+              isActive
+                ? "bg-background text-foreground shadow-[0_4px_14px_rgba(0,0,0,0.08)] ring-1 ring-border/60"
+                : "text-muted-foreground hover:bg-background/70 hover:text-foreground",
+            )}
+          >
+            {/* Active background */}
+            {isActive && (
+              <span className="absolute inset-0 rounded-xl bg-primary/[0.04]" />
+            )}
+
+            {/* Text */}
+            <span className="relative z-10">
+              {link.label}
+            </span>
+
+            {/* Active indicator */}
+            {isActive && (
+              <span className="absolute bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-primary shadow-[0_0_10px_3px_rgba(0,220,229,0.55)]" />
+            )}
+
+            {/* Hover line */}
+            {!isActive && (
+              <span className="absolute bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-primary transition-all duration-300 group-hover:w-6" />
+            )}
+          </Link>
+        );
+      })}
     </nav>
   );
 };

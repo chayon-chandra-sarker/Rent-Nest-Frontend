@@ -1,99 +1,122 @@
-import { Home, Globe, Mail, MessageCircle, Send } from "lucide-react";
+
+import { Mail } from "lucide-react";
+import {
+  FaFacebookF,
+  FaGithub,
+  FaInstagram,
+} from "react-icons/fa";
 import Link from "next/link";
 
-const columns = [
+const footerLinks = [
+  { label: "Home", href: "/" },
+  { label: "Properties", href: "/properties" },
+  { label: "Categories", href: "/categories" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+
+const socials = [
   {
-    title: "Explore",
-    links: ["Browse rentals", "Featured homes", "Categories", "Neighborhoods"],
+    label: "Facebook",
+    href: "#",
+    icon: FaFacebookF,
   },
   {
-    title: "Company",
-    links: ["About us", "Careers", "Press", "Contact"],
+    label: "Instagram",
+    href: "#",
+    icon: FaInstagram,
   },
   {
-    title: "Support",
-    links: ["Help center", "Safety", "Cancellation", "Report a listing"],
+    label: "GitHub",
+    href: "#",
+    icon: FaGithub,
   },
   {
-    title: "Legal",
-    links: ["Terms of service", "Privacy policy", "Cookie policy", "Sitemap"],
+    label: "Email",
+    href: "mailto:hello@rentnest.com",
+    icon: Mail,
   },
 ];
 
-const socials = [Globe, MessageCircle, Mail, Send];
-
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border bg-secondary/40">
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Main Footer */}
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:grid-cols-6 lg:gap-6">
+    <footer className="border-t border-border bg-background">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+          
           {/* Brand */}
-          <div className="col-span-2">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                <Home className="size-5" />
-              </span>
+          <div className="max-w-md">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2"
+            >
+              <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                <span className="text-lg font-black">R</span>
+              </div>
 
-              <span className="text-lg font-extrabold tracking-tight text-foreground">
+              <span className="text-xl font-extrabold tracking-tight text-foreground">
                 RentNest
               </span>
             </Link>
 
-            <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              The trusted marketplace connecting tenants and landlords to
-              discover, rent, and manage verified rental properties.
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              Find verified rental properties and connect with trusted
+              landlords — all in one simple place.
             </p>
-
-            {/* Social */}
-            <div className="mt-4 flex gap-2">
-              {socials.map((Icon, i) => (
-                <a
-                  key={i}
-                  href="#"
-                  aria-label="Social media link"
-                  className="flex size-8 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:border-primary/40 hover:text-primary"
-                >
-                  <Icon className="size-4" />
-                </a>
-              ))}
-            </div>
           </div>
 
-          {/* Columns */}
-          {columns.map((col) => (
-            <div key={col.title}>
-              <h3 className="text-sm font-bold text-foreground">
-                {col.title}
-              </h3>
+          {/* Navigation */}
+          <nav className="flex flex-wrap gap-x-6 gap-y-3">
+            {footerLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-              <ul className="mt-3 space-y-2">
-                {col.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {/* Social */}
+          <div className="flex items-center gap-2">
+            {socials.map(({ label, href, icon: Icon }) => (
+              <a
+                key={label}
+                href={href}
+                aria-label={label}
+                className="flex size-9 items-center justify-center rounded-xl border border-border text-muted-foreground transition-all hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+              >
+                <Icon className="size-4" />
+              </a>
+            ))}
+          </div>
         </div>
 
         {/* Bottom */}
-        <div className="mt-8 flex flex-col items-center justify-between gap-2 border-t border-border pt-5 sm:flex-row">
-          <p className="text-xs text-muted-foreground">
+        <div className="mt-8 flex flex-col gap-2 border-t border-border pt-5 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>
             © {new Date().getFullYear()} RentNest. All rights reserved.
           </p>
 
-          <p className="text-xs text-muted-foreground">
-            Made for renters and landlords everywhere.
-          </p>
+          <div className="flex gap-4">
+            <Link
+              href="/privacy"
+              className="transition-colors hover:text-foreground"
+            >
+              Privacy
+            </Link>
+
+            <Link
+              href="/terms"
+              className="transition-colors hover:text-foreground"
+            >
+              Terms
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
   );
 }
+

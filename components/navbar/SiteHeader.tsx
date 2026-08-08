@@ -4,11 +4,11 @@ import { logOut } from "@/service/logOut";
 import { Home, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import NavLinks from "./NavLinks";
-import ThemeToggle from "./ThemeToggle";
-import ProfileMenu from "./ProfileMenu";
-import MobileMenu from "./MobileMenu";
 
+import MobileMenu from "./MobileMenu";
+import NavLinks from "./NavLinks";
+import ProfileMenu from "./ProfileMenu";
+import ThemeToggle from "./ThemeToggle";
 
 type IUserData = {
   id: string;
@@ -38,8 +38,7 @@ export function SiteHeader({ user }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const [updatedProfile, setUpdatedProfile] =
-    useState<IUserData | null>(null);
+  const [updatedProfile, setUpdatedProfile] = useState<IUserData | null>(null);
 
   useEffect(() => {
     const handleProfileUpdate = (event: Event) => {
@@ -50,16 +49,10 @@ export function SiteHeader({ user }: NavbarProps) {
       }
     };
 
-    window.addEventListener(
-      "profile-updated",
-      handleProfileUpdate,
-    );
+    window.addEventListener("profile-updated", handleProfileUpdate);
 
     return () => {
-      window.removeEventListener(
-        "profile-updated",
-        handleProfileUpdate,
-      );
+      window.removeEventListener("profile-updated", handleProfileUpdate);
     };
   }, []);
 
@@ -70,24 +63,17 @@ export function SiteHeader({ user }: NavbarProps) {
       }
     : user.data;
 
-  const isLoggedIn =
-    user?.success === true && !!user?.data;
+  const isLoggedIn = user?.success === true && !!user?.data;
 
-  const profileImage = isLoggedIn
-    ? effectiveUserData.image
-    : null;
+  const profileImage = isLoggedIn ? effectiveUserData.image : null;
 
-  const profileName = isLoggedIn
-    ? effectiveUserData.name
-    : "Guest User";
+  const profileName = isLoggedIn ? effectiveUserData.name : "Guest User";
 
   const profileEmail = isLoggedIn
     ? effectiveUserData.email
     : "Please login to continue";
 
-  const profileRole = isLoggedIn
-    ? effectiveUserData.role
-    : "";
+  const profileRole = isLoggedIn ? effectiveUserData.role : "";
 
   const handleLogout = async () => {
     try {
@@ -108,66 +94,57 @@ export function SiteHeader({ user }: NavbarProps) {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur">
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6">
-        {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2"
-          onClick={closeMenus}
-        >
-          <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <Home className="size-4" />
-          </span>
-
-          <span className="text-lg font-bold tracking-tight">
-            RentNest
-          </span>
-        </Link>
-
-        {/* Desktop navigation */}
-        <NavLinks />
-
-        {/* Right side */}
-        <div className="flex items-center gap-2">
-          {/* Theme */}
-          <ThemeToggle />
-
-          {/* Desktop profile */}
-          <ProfileMenu
-            isLoggedIn={isLoggedIn}
-            profileName={profileName}
-            profileEmail={profileEmail}
-            profileRole={profileRole}
-            profileImage={profileImage}
-            isOpen={isProfileOpen}
-            onToggle={() =>
-              setIsProfileOpen((value) => !value)
-            }
-            onClose={() => setIsProfileOpen(false)}
-            onLogout={handleLogout}
-          />
-
-          {/* Mobile menu button */}
-          <button
-            type="button"
-            onClick={toggleMobileMenu}
-            className="inline-flex size-9 items-center justify-center rounded-lg border border-border md:hidden"
-            aria-label={
-              open ? "Close menu" : "Open menu"
-            }
-            aria-expanded={open}
+    <header className="sticky top-0 z-50 w-full">
+      {/* Full-width navbar background */}
+      <div className="w-full border-b border-border/60 bg-background/95 backdrop-blur-xl">
+        <div className="flex h-[80px] w-full items-center justify-between px-5 sm:px-8 lg:px-12 xl:px-16">
+          {/* Logo */}
+          <Link
+            href="/"
+            onClick={closeMenus}
+            className="group flex items-center gap-3"
           >
-            {open ? (
-              <X className="size-5" />
-            ) : (
-              <Menu className="size-5" />
-            )}
-          </button>
+            <span className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(0,220,229,0.22)] transition-all duration-300 group-hover:scale-105">
+              <Home className="size-5" />
+            </span>
+
+            <span className="text-[22px] font-extrabold tracking-tight text-foreground">
+              RentNest
+            </span>
+          </Link>
+
+          {/* Navigation */}
+          <NavLinks />
+
+          {/* Right actions */}
+          <div className="flex items-center gap-2.5">
+            <ThemeToggle />
+
+            <ProfileMenu
+              isLoggedIn={isLoggedIn}
+              profileName={profileName}
+              profileEmail={profileEmail}
+              profileRole={profileRole}
+              profileImage={profileImage}
+              isOpen={isProfileOpen}
+              onToggle={() => setIsProfileOpen((value) => !value)}
+              onClose={() => setIsProfileOpen(false)}
+              onLogout={handleLogout}
+            />
+
+            <button
+              type="button"
+              onClick={toggleMobileMenu}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              className="inline-flex size-11 items-center justify-center rounded-xl border border-border/70 bg-background text-foreground transition-all duration-300 hover:border-primary/40 hover:bg-primary/5 md:hidden"
+            >
+              {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile menu */}
       <MobileMenu
         open={open}
         isProfileOpen={isProfileOpen}
@@ -176,9 +153,7 @@ export function SiteHeader({ user }: NavbarProps) {
         profileEmail={profileEmail}
         profileRole={profileRole}
         profileImage={profileImage}
-        onProfileToggle={() =>
-          setIsProfileOpen((value) => !value)
-        }
+        onProfileToggle={() => setIsProfileOpen((value) => !value)}
         onClose={closeMenus}
         onLogout={handleLogout}
       />
