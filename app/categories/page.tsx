@@ -5,7 +5,7 @@ import PopularCategories from "@/components/Catagories/PopularCategories";
 
 
 
-const CategoriesPage = async () => {
+const CategoriesPage = () => {
 
   return (
     <main className="min-h-screen bg-background">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -8,13 +9,6 @@ import {
 } from "lucide-react";
 
 import ProfileImage from "./ProfileImage";
-
-type IUserData = {
-  name: string;
-  email: string;
-  role: string;
-  image: string;
-};
 
 type ProfileMenuProps = {
   isLoggedIn: boolean;
@@ -72,27 +66,33 @@ const ProfileMenu = ({
   onLogout,
 }: ProfileMenuProps) => {
   return (
-    <div className="relative hidden md:block">
+    <div className="relative">
       {/* Profile Button */}
-      <button
-        type="button"
-        onClick={onToggle}
-        aria-label="Open profile menu"
-        aria-expanded={isOpen}
-        className="relative size-9 overflow-hidden rounded-full border border-border bg-primary/10 transition hover:border-primary/40"
-      >
-        {isLoggedIn ? (
+      {isLoggedIn ? (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label="Open profile menu"
+          aria-expanded={isOpen}
+          className="relative size-11 overflow-hidden rounded-full border border-border/70 bg-background transition-all duration-300 hover:border-primary/40 hover:ring-2 hover:ring-primary/10"
+        >
           <ProfileImage
             image={profileImage}
             name={profileName}
             size="medium"
           />
-        ) : (
-          <div className="flex size-full items-center justify-center text-primary">
-            <User className="size-5" />
-          </div>
-        )}
-      </button>
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-label="Open account menu"
+          aria-expanded={isOpen}
+          className="flex size-11 items-center justify-center rounded-full border border-border/70 bg-background text-muted-foreground transition-all duration-300 hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+        >
+          <User className="size-5" />
+        </button>
+      )}
 
       {/* Dropdown */}
       {isOpen && (
@@ -184,3 +184,4 @@ const ProfileMenu = ({
 };
 
 export default ProfileMenu;
+

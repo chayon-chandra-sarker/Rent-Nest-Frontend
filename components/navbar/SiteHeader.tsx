@@ -114,7 +114,7 @@ export function SiteHeader({ user }: NavbarProps) {
           </Link>
 
           {/* Navigation */}
-          <NavLinks />
+          <NavLinks isLoggedIn={isLoggedIn} role={profileRole} />
 
           {/* Right actions */}
           <div className="flex items-center gap-2.5">

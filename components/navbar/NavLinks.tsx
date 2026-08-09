@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -26,21 +27,64 @@ const navLinks = [
 type NavLinksProps = {
   onClick?: () => void;
   mobile?: boolean;
+  isLoggedIn?: boolean;
+  role?: string;
 };
 
 const NavLinks = ({
   onClick,
   mobile = false,
+  isLoggedIn = false,
 }: NavLinksProps) => {
   const pathname = usePathname();
 
+  const links = isLoggedIn
+    ? [
+        ...navLinks,
+        {
+          label: "Profile",
+          href: "/profile",
+        },
+        {
+          label: "Dashboard",
+          href: "/dashboard",
+        },
+      ]
+    : navLinks;
+
+  // Active link check
+  const isLinkActive = (href: string) => {
+    // Profile route
+    if (href === "/profile") {
+      return (
+        pathname === "/profile" ||
+        pathname.endsWith("/dashboard/profile")
+      );
+    }
+
+    // Dashboard route
+    if (href === "/dashboard") {
+      return (
+        pathname === "/dashboard" ||
+        (
+          pathname.startsWith("/dashboard/") &&
+          !pathname.endsWith("/profile")
+        )
+      );
+    }
+
+    // Other routes
+    return (
+      pathname === href ||
+      pathname.startsWith(`${href}/`)
+    );
+  };
+
   if (mobile) {
     return (
-      <nav className="flex flex-col gap-1.5">
-        {navLinks.map((link) => {
-          const isActive =
-            pathname === link.href ||
-            pathname.startsWith(`${link.href}/`);
+      <nav className="flex flex-col gap-1">
+        {links.map((link) => {
+          const isActive = isLinkActive(link.href);
 
           return (
             <Link
@@ -69,11 +113,9 @@ const NavLinks = ({
   }
 
   return (
-    <nav className="hidden items-center gap-1 rounded-2xl border border-border/60 bg-muted/30 p-1.5 shadow-sm backdrop-blur-md md:flex">
-      {navLinks.map((link) => {
-        const isActive =
-          pathname === link.href ||
-          pathname.startsWith(`${link.href}/`);
+    <nav className="flex items-center gap-1">
+      {links.map((link) => {
+        const isActive = isLinkActive(link.href);
 
         return (
           <Link
@@ -114,3 +156,4 @@ const NavLinks = ({
 };
 
 export default NavLinks;
+
