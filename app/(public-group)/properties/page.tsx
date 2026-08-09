@@ -10,10 +10,7 @@ import {
   MapPin,
 } from "lucide-react";
 
-import {
-  getTenantProperties,
-  AdminProperty,
-} from "@/service/property.service";
+import { getTenantProperties, AdminProperty } from "@/service/property.service";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -28,9 +25,7 @@ type PropertiesPageProps = {
   }>;
 };
 
-const PropertiesPage = async ({
-  searchParams,
-}: PropertiesPageProps) => {
+const PropertiesPage = async ({ searchParams }: PropertiesPageProps) => {
   let properties: AdminProperty[] = [];
   let errorMessage = "";
 
@@ -50,94 +45,68 @@ const PropertiesPage = async ({
     console.error("Failed to load properties:", error);
 
     errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Failed to load properties";
+      error instanceof Error ? error.message : "Failed to load properties";
   }
 
-const filteredProperties = properties.filter((property) => {
-  const locationMatch =
-    !location ||
-    property.location
-      .toLowerCase()
-      .includes(location.toLowerCase());
+  const filteredProperties = properties.filter((property) => {
+    const locationMatch =
+      !location ||
+      property.location.toLowerCase().includes(location.toLowerCase());
 
-  // Supports both category ID and category name
-  const categoryMatch =
-    !category ||
-    property.category.id === category ||
-    property.category.name
-      .toLowerCase()
-      .includes(category.toLowerCase());
+    // Supports both category ID and category name
+    const categoryMatch =
+      !category ||
+      property.category.id === category ||
+      property.category.name.toLowerCase().includes(category.toLowerCase());
 
-  let priceMatch = true;
+    let priceMatch = true;
 
-  const propertyPrice = Number(property.price);
+    const propertyPrice = Number(property.price);
 
-  if (price === "$500 – $1,000") {
-    priceMatch =
-      propertyPrice >= 500 &&
-      propertyPrice <= 1000;
-  }
+    if (price === "$1000 – $1,0000") {
+      priceMatch = propertyPrice >= 1000 && propertyPrice <= 10000;
+    }
 
-  if (price === "$1,000 – $2,000") {
-    priceMatch =
-      propertyPrice > 1000 &&
-      propertyPrice <= 2000;
-  }
+    if (price === "$1,0000 – $2,0000") {
+      priceMatch = propertyPrice > 10000 && propertyPrice <= 20000;
+    }
 
-  if (price === "$2,000 – $3,500") {
-    priceMatch =
-      propertyPrice > 2000 &&
-      propertyPrice <= 3500;
-  }
+    if (price === "$2,0000 – $3,5000") {
+      priceMatch = propertyPrice > 20000 && propertyPrice <= 35000;
+    }
 
-  if (price === "$3,500+") {
-    priceMatch = propertyPrice > 3500;
-  }
+    if (price === "$3,5000+") {
+      priceMatch = propertyPrice > 35000;
+    }
 
-  const availabilityMatch =
-    availability === "all"
-      ? true
-      : availability === "available"
-        ? property.isAvailable
-        : !property.isAvailable;
+    const availabilityMatch =
+      availability === "all"
+        ? true
+        : availability === "available"
+          ? property.isAvailable
+          : !property.isAvailable;
 
-  return (
-    locationMatch &&
-    categoryMatch &&
-    priceMatch &&
-    availabilityMatch
-  );
-});
+    return locationMatch && categoryMatch && priceMatch && availabilityMatch;
+  });
 
   const sortedProperties = [...filteredProperties];
 
   if (sort === "price-low") {
-    sortedProperties.sort(
-      (a, b) =>
-        Number(a.price) - Number(b.price)
-    );
+    sortedProperties.sort((a, b) => Number(a.price) - Number(b.price));
   }
 
   if (sort === "price-high") {
-    sortedProperties.sort(
-      (a, b) =>
-        Number(b.price) - Number(a.price)
-    );
+    sortedProperties.sort((a, b) => Number(b.price) - Number(a.price));
   }
 
   if (sort === "newest") {
     sortedProperties.sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() -
-        new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
   }
 
-  const totalPages = Math.ceil(
-    sortedProperties.length / ITEMS_PER_PAGE
-  );
+  const totalPages = Math.ceil(sortedProperties.length / ITEMS_PER_PAGE);
 
   const currentPage =
     pageNumber < 1
@@ -146,17 +115,11 @@ const filteredProperties = properties.filter((property) => {
         ? totalPages
         : pageNumber;
 
-  const startIndex =
-    (currentPage - 1) * ITEMS_PER_PAGE;
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
 
-  const endIndex =
-    startIndex + ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
 
-  const currentProperties =
-    sortedProperties.slice(
-      startIndex,
-      endIndex
-    );
+  const currentProperties = sortedProperties.slice(startIndex, endIndex);
 
   const createPageUrl = (page: number) => {
     const query = new URLSearchParams();
@@ -187,15 +150,12 @@ const filteredProperties = properties.filter((property) => {
 
     const queryString = query.toString();
 
-    return queryString
-      ? `/properties?${queryString}`
-      : "/properties";
+    return queryString ? `/properties?${queryString}` : "/properties";
   };
 
   return (
     <main className="min-h-screen bg-background">
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-
         {/* Back */}
         <Link
           href="/"
@@ -212,10 +172,7 @@ const filteredProperties = properties.filter((property) => {
           </p>
 
           <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">
-            {location ||
-            category ||
-            price ||
-            availability !== "all"
+            {location || category || price || availability !== "all"
               ? "Search Results"
               : "All Properties"}
           </h1>
@@ -285,11 +242,8 @@ const filteredProperties = properties.filter((property) => {
           {sortedProperties.length > 0 && (
             <p className="mt-3 text-xs text-muted-foreground">
               Showing {startIndex + 1}-
-              {Math.min(
-                endIndex,
-                sortedProperties.length
-              )}{" "}
-              of {sortedProperties.length} properties
+              {Math.min(endIndex, sortedProperties.length)} of{" "}
+              {sortedProperties.length} properties
             </p>
           )}
         </div>
@@ -303,19 +257,14 @@ const filteredProperties = properties.filter((property) => {
               Failed to Load Properties
             </h2>
 
-            <p className="mt-2 text-sm text-muted-foreground">
-              {errorMessage}
-            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{errorMessage}</p>
           </div>
         ) : sortedProperties.length === 0 ? (
-
           /* Empty */
           <div className="rounded-3xl border border-border bg-card p-12 text-center">
             <Building2 className="mx-auto size-12 text-muted-foreground/50" />
 
-            <h2 className="mt-4 text-xl font-bold">
-              No Properties Found
-            </h2>
+            <h2 className="mt-4 text-xl font-bold">No Properties Found</h2>
 
             <p className="mt-2 text-sm text-muted-foreground">
               No properties match your search criteria.
@@ -328,7 +277,6 @@ const filteredProperties = properties.filter((property) => {
               View All Properties
             </Link>
           </div>
-
         ) : (
           <>
             {/* Property Grid */}
@@ -365,9 +313,7 @@ const filteredProperties = properties.filter((property) => {
                           : "bg-red-500/90 text-white"
                       }`}
                     >
-                      {property.isAvailable
-                        ? "Available"
-                        : "Rented"}
+                      {property.isAvailable ? "Available" : "Rented"}
                     </span>
                   </div>
 
@@ -380,12 +326,8 @@ const filteredProperties = properties.filter((property) => {
                     <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                       <MapPin className="size-4 shrink-0 text-primary" />
 
-                      <span className="truncate">
-                        {property.location}
-                      </span>
+                      <span className="truncate">{property.location}</span>
                     </p>
-
-                    
 
                     <div className="mt-4 flex items-center gap-5 border-t border-border pt-4 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1.5">
@@ -401,26 +343,20 @@ const filteredProperties = properties.filter((property) => {
 
                     {property.amenities.length > 0 && (
                       <div className="mt-4 flex flex-wrap gap-1.5">
-                        {property.amenities
-                          .slice(0, 4)
-                          .map((amenity) => (
-                            <span
-                              key={amenity}
-                              className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
-                            >
-                              {amenity}
-                            </span>
-                          ))}
+                        {property.amenities.slice(0, 4).map((amenity) => (
+                          <span
+                            key={amenity}
+                            className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+                          >
+                            {amenity}
+                          </span>
+                        ))}
                       </div>
                     )}
 
                     <div className="mt-5 flex items-center justify-between gap-3">
                       <p className="text-lg font-extrabold">
-                        ৳
-                        {Number(
-                          property.price
-                        ).toLocaleString()}
-
+                        ৳{Number(property.price).toLocaleString()}
                         <span className="text-sm font-medium text-muted-foreground">
                           {" "}
                           /mo
@@ -449,9 +385,7 @@ const filteredProperties = properties.filter((property) => {
                 <div className="flex items-center gap-2">
                   {currentPage > 1 ? (
                     <Link
-                      href={createPageUrl(
-                        currentPage - 1
-                      )}
+                      href={createPageUrl(currentPage - 1)}
                       className="inline-flex h-10 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:bg-muted"
                     >
                       <ChevronLeft className="size-4" />
@@ -467,7 +401,7 @@ const filteredProperties = properties.filter((property) => {
                   <div className="flex items-center gap-1">
                     {Array.from(
                       { length: totalPages },
-                      (_, index) => index + 1
+                      (_, index) => index + 1,
                     ).map((page) => (
                       <Link
                         key={page}
@@ -485,9 +419,7 @@ const filteredProperties = properties.filter((property) => {
 
                   {currentPage < totalPages ? (
                     <Link
-                      href={createPageUrl(
-                        currentPage + 1
-                      )}
+                      href={createPageUrl(currentPage + 1)}
                       className="inline-flex h-10 items-center gap-2 rounded-xl border border-border bg-card px-4 text-sm font-semibold transition hover:bg-muted"
                     >
                       Next
