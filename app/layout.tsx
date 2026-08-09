@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
@@ -7,6 +8,7 @@ import { getMe } from "@/service/getMe";
 import { SiteFooter } from "@/components/shared/SiteFooter";
 import QueryProvider from "@/providers/QueryProvider";
 import { SiteHeader } from "@/components/navbar/SiteHeader";
+import GoogleProvider from "@/providers/GoogleProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -85,13 +87,9 @@ export const metadata: Metadata = {
 
     googleBot: {
       index: true,
-
       follow: true,
-
       "max-image-preview": "large",
-
       "max-snippet": -1,
-
       "max-video-preview": -1,
     },
   },
@@ -113,20 +111,29 @@ export default async function RootLayout({
         geistSans.variable,
         geistMono.variable,
         inter.variable,
-        "font-sans",
+        "font-sans"
       )}
     >
-      <body className="flex min-h-screen flex-col overflow-x-hidden">
+      <body className="min-h-screen flex flex-col">
         <QueryProvider>
-          <SiteHeader user={user} />
+          <GoogleProvider>
+            <SiteHeader user={user} />
 
-          <main className="flex-1 w-full">{children}</main>
+            <main className="flex-1 w-full">
+              {children}
+            </main>
 
-          <Toaster position="top-right" richColors closeButton />
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+            />
 
-          <SiteFooter />
+            <SiteFooter />
+          </GoogleProvider>
         </QueryProvider>
       </body>
     </html>
   );
 }
+
