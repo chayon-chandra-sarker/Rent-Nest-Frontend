@@ -14,12 +14,12 @@ const navLinks = [
     href: "/categories",
   },
   {
-    label: "How It Works",
-    href: "/how-it-works",
+    label: "About",
+    href: "/about",
   },
   {
-    label: "Testimonials",
-    href: "/testimonials",
+    label: "Contacts",
+    href: "/contact",
   },
 ];
 
