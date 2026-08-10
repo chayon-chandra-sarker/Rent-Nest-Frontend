@@ -7,7 +7,10 @@ import { GoogleLogin } from "@react-oauth/google";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginAction } from "../_actions/authAction";
+import {
+  loginAction,
+  googleLoginAction,
+} from "../_actions/authAction";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -27,88 +30,65 @@ const LoginFrom = () => {
 
   const router = useRouter();
 
-
+  // Normal login response
   useEffect(() => {
     if (!state.message) return;
 
     if (state.success) {
       toast.success(state.message || "Login successfully");
-
     } else {
       toast.error(state.message || "Login failed");
     }
-  }, [state, router]);
+  }, [state]);
 
+  // Google Login
+  const handleGoogleLogin = async (credential: string) => {
+    console.log("🚀 GOOGLE SERVER ACTION STARTED");
 
-const handleGoogleLogin = async (credential: string) => {
-  try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    try {
+      const result = await googleLoginAction(credential);
 
-    console.log("API URL:", apiUrl);
+      console.log(
+        "🚀 GOOGLE SERVER ACTION RESPONSE:",
+        result
+      );
 
-    if (!apiUrl) {
-      throw new Error("NEXT_PUBLIC_API_URL is not configured");
-    }
-
-    const response = await fetch(
-      `${apiUrl}/api/auth/google`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          idToken: credential,
-        }),
+      if (!result.success) {
+        throw new Error(
+          result.message || "Google login failed"
+        );
       }
-    );
 
-    console.log("Status:", response.status);
-    console.log("Request URL:", response.url);
+      toast.success(
+        result.message || "Google login successful"
+      );
 
-    const contentType = response.headers.get("content-type");
+      // Redirect based on role
+      if (result.role === "TENANT") {
+        router.push("/dashboard");
+      } else if (result.role === "ADMIN") {
+        router.push("/admin-dashboard");
+      } else if (result.role === "LANDLORD") {
+        router.push("/land-lord-dashboard");
+      } else {
+        router.push("/");
+      }
 
-    if (!contentType?.includes("application/json")) {
-      const text = await response.text();
+      router.refresh();
+    } catch (error) {
+      console.error("🚨 Google Login Error:", error);
 
-      console.error("Non-JSON response:", text);
-
-      throw new Error(
-        `Server returned ${response.status}. Please check API URL.`
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Google login failed"
       );
     }
-
-    const result = await response.json();
-
-    console.log("Google Login Response:", result);
-
-    if (!response.ok) {
-      throw new Error(
-        result?.message || "Google login failed"
-      );
-    }
-
-    toast.success(
-      result?.message || "Google login successful"
-    );
-
-    router.push("/dashboard");
-    router.refresh();
-  } catch (error) {
-    console.error("Google Login Error:", error);
-
-    toast.error(
-      error instanceof Error
-        ? error.message
-        : "Google login failed"
-    );
-  }
-};
+  };
 
   return (
-    <div className="w-full">
-     
+    <div>
+      {/* Login Form */}
       <form action={action} className="space-y-5">
         {/* Email Field */}
         <div className="space-y-2">
@@ -158,7 +138,9 @@ const handleGoogleLogin = async (credential: string) => {
             <Input
               id="password"
               name="password"
-              type={showPassword ? "text" : "password"}
+              type={
+                showPassword ? "text" : "password"
+              }
               placeholder="Enter Your Password"
               value={formData.password}
               onChange={(e) =>
@@ -208,6 +190,7 @@ const handleGoogleLogin = async (credential: string) => {
         </Button>
       </form>
 
+      {/* Divider */}
       <div className="flex items-center gap-3 my-6">
         <div className="h-px flex-1 bg-gray-200" />
 
@@ -218,9 +201,15 @@ const handleGoogleLogin = async (credential: string) => {
         <div className="h-px flex-1 bg-gray-200" />
       </div>
 
+      {/* Google Login */}
       <div className="flex justify-center">
         <GoogleLogin
           onSuccess={(credentialResponse) => {
+            console.log(
+              "🔥 GOOGLE SUCCESS:",
+              credentialResponse
+            );
+
             const credential =
               credentialResponse.credential;
 
@@ -244,4 +233,3 @@ const handleGoogleLogin = async (credential: string) => {
 };
 
 export default LoginFrom;
-

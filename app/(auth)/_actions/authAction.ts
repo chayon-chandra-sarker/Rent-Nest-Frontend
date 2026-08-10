@@ -113,3 +113,72 @@ export const loginAction = async (
     message: "Invalid user role",
   };
 };
+
+export const googleLoginAction = async (
+  idToken: string
+) => {
+  try {
+    const res = await fetch(
+      "https://rent-nest-backend-fiy9.onrender.com/api/auth/google",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idToken,
+        }),
+      }
+    );
+
+    const result = await res.json();
+
+    if (!res.ok || !result.success) {
+      return {
+        success: false,
+        message: result.message || "Google login failed",
+      };
+    }
+
+    const cookieStore = await cookies();
+
+    cookieStore.set(
+      "accessToken",
+      result.data.accessToken,
+      {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24,
+        sameSite: "lax",
+      }
+    );
+
+    cookieStore.set(
+      "refreshToken",
+      result.data.refreshToken,
+      {
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 7,
+        sameSite: "lax",
+      }
+    );
+
+    const decodedToken = jwt.decode(
+      result.data.accessToken
+    ) as JwtPayload | null;
+
+    const role = decodedToken?.role;
+
+    return {
+      success: true,
+      message: "Google login successful",
+      role,
+    };
+  } catch (error) {
+    console.error("Google login error:", error);
+
+    return {
+      success: false,
+      message: "Unable to connect to server",
+    };
+  }
+};
