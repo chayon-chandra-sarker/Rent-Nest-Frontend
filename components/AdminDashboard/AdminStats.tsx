@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -12,17 +11,30 @@ import {
   Activity,
 } from "lucide-react";
 
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  Tooltip,
+  BarChart,
+  Bar,
+  Cell,
+} from "recharts";
+
 import type { AdminDashboardStats } from "@/types/admin.types";
 
 interface AdminStatsProps {
-  data: AdminDashboardStats | undefined;
+  data: AdminDashboardStats;
 }
 
 const AdminStats = ({ data }: AdminStatsProps) => {
   const stats = [
     {
       title: "Total Users",
-      value: data?.totalUsers ?? 0,
+      value: data.totalUsers,
       description: "Registered users",
       icon: Users,
       iconBg: "bg-blue-50 dark:bg-blue-500/10",
@@ -33,7 +45,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
     },
     {
       title: "Total Properties",
-      value: data?.totalProperties ?? 0,
+      value: data.totalProperties,
       description: "Properties listed",
       icon: Building2,
       iconBg: "bg-violet-50 dark:bg-violet-500/10",
@@ -44,7 +56,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
     },
     {
       title: "Rental Requests",
-      value: data?.totalRentalRequests ?? 0,
+      value: data.totalRentalRequests,
       description: "Total rental requests",
       icon: ClipboardList,
       iconBg: "bg-orange-50 dark:bg-orange-500/10",
@@ -55,7 +67,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
     },
     {
       title: "Total Revenue",
-      value: `৳${Number(data?.totalRevenue ?? 0).toLocaleString()}`,
+      value: `৳${Number(data.totalRevenue).toLocaleString()}`,
       description: "Platform revenue",
       icon: Wallet,
       iconBg: "bg-emerald-50 dark:bg-emerald-500/10",
@@ -66,7 +78,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
     },
     {
       title: "Completed Payments",
-      value: data?.completedPayments ?? 0,
+      value: data.completedPayments,
       description: "Successful payments",
       icon: CreditCard,
       iconBg: "bg-cyan-50 dark:bg-cyan-500/10",
@@ -74,6 +86,34 @@ const AdminStats = ({ data }: AdminStatsProps) => {
       badge: "Completed",
       badgeStyle:
         "bg-cyan-50 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400",
+    },
+  ];
+
+  const rentalRequestData = [
+    {
+      name: "Pending",
+      value: data.rentalRequests.pending,
+      color: "#f59e0b",
+    },
+    {
+      name: "Approved",
+      value: data.rentalRequests.approved,
+      color: "#22c55e",
+    },
+    {
+      name: "Active",
+      value: data.rentalRequests.active,
+      color: "#06b6d4",
+    },
+    {
+      name: "Completed",
+      value: data.rentalRequests.completed,
+      color: "#8b5cf6",
+    },
+    {
+      name: "Rejected",
+      value: data.rentalRequests.rejected,
+      color: "#ef4444",
     },
   ];
 
@@ -97,8 +137,8 @@ const AdminStats = ({ data }: AdminStatsProps) => {
             </h1>
 
             <p className="mt-2 max-w-xl text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Monitor your RentNest platform, users, properties,
-              rental requests and payments from one place.
+              Monitor your RentNest platform, users, properties, rental requests
+              and payments from one place.
             </p>
           </div>
 
@@ -129,7 +169,6 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                 key={stat.title}
                 className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
               >
-                {/* Top */}
                 <div className="flex items-start justify-between">
                   <div
                     className={`flex size-11 items-center justify-center rounded-xl ${stat.iconBg}`}
@@ -144,7 +183,6 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                   </span>
                 </div>
 
-                {/* Content */}
                 <div className="mt-5">
                   <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
                     {stat.title}
@@ -159,18 +197,155 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                   </p>
                 </div>
 
-                {/* Decorative */}
                 <div className="absolute -bottom-8 -right-8 size-24 rounded-full bg-slate-100/70 transition-transform duration-500 group-hover:scale-150 dark:bg-slate-800/30" />
               </div>
             );
           })}
         </div>
 
+        {/* ================= CHARTS ================= */}
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          {/* ================= REVENUE CHART ================= */}
+          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-cyan-500">
+                  Financial Analytics
+                </p>
+
+                <h3 className="mt-1 text-lg font-bold text-slate-900 dark:text-white">
+                  Revenue Overview
+                </h3>
+
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                  Monthly revenue from completed payments.
+                </p>
+              </div>
+
+              <div className="rounded-xl bg-cyan-50 px-4 py-2 text-sm font-bold text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400">
+                ৳{Number(data.totalRevenue).toLocaleString()}
+              </div>
+            </div>
+
+            <div className="mt-6 h-[320px] w-full">
+              {data.monthlyRevenue.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={data.monthlyRevenue}
+                    margin={{
+                      top: 20,
+                      right: 20,
+                      left: 10,
+                      bottom: 10,
+                    }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      className="stroke-slate-200 dark:stroke-slate-800"
+                    />
+
+                    <XAxis
+                      dataKey="month"
+                      axisLine={false}
+                      tickLine={false}
+                      className="fill-slate-400"
+                    />
+
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      className="fill-slate-400"
+                      tickFormatter={(value) =>
+                        `৳${Number(value).toLocaleString()}`
+                      }
+                    />
+
+                    <Tooltip
+                      formatter={(value) => [
+                        `৳${Number(value).toLocaleString()}`,
+                        "Revenue",
+                      ]}
+                    />
+
+                    <Line
+                      type="monotone"
+                      dataKey="revenue"
+                      stroke="#06b6d4"
+                      strokeWidth={3}
+                      dot={{
+                        r: 7,
+                        fill: "#06b6d4",
+                        stroke: "#ffffff",
+                        strokeWidth: 3,
+                      }}
+                      activeDot={{
+                        r: 9,
+                      }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <p className="text-sm text-slate-400">
+                    No revenue data available yet.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ================= RENTAL REQUEST CHART ================= */}
+          <div className="h-[320px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={rentalRequestData}
+                margin={{
+                  top: 20,
+                  right: 20,
+                  left: 0,
+                  bottom: 10,
+                }}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  className="stroke-slate-200 dark:stroke-slate-800"
+                />
+
+                <XAxis
+                  dataKey="name"
+                  axisLine={false}
+                  tickLine={false}
+                  className="fill-slate-400"
+                />
+
+                <YAxis
+                  allowDecimals={false}
+                  axisLine={false}
+                  tickLine={false}
+                  className="fill-slate-400"
+                />
+
+                <Tooltip
+                  cursor={{ fill: "transparent" }}
+                  formatter={(value) => [value, "Requests"]}
+                />
+
+                <Bar dataKey="value" radius={[8, 8, 0, 0]} maxBarSize={55}>
+                  {rentalRequestData.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
         {/* ================= BOTTOM SECTION ================= */}
         <div className="mt-6 grid gap-6 lg:grid-cols-3">
           {/* Platform Overview */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:col-span-2">
-            {/* Header */}
             <div className="flex items-start justify-between">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-wider text-cyan-500">
@@ -191,7 +366,6 @@ const AdminStats = ({ data }: AdminStatsProps) => {
               </div>
             </div>
 
-            {/* Overview Items */}
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
               {/* Users */}
               <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
@@ -200,10 +374,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                     <Users size={17} />
                   </div>
 
-                  <ArrowUpRight
-                    size={16}
-                    className="text-slate-400"
-                  />
+                  <ArrowUpRight size={16} className="text-slate-400" />
                 </div>
 
                 <p className="mt-4 text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -211,7 +382,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                 </p>
 
                 <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
-                  {data?.totalUsers ?? 0}
+                  {data.totalUsers}
                 </p>
               </div>
 
@@ -222,10 +393,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                     <Building2 size={17} />
                   </div>
 
-                  <ArrowUpRight
-                    size={16}
-                    className="text-slate-400"
-                  />
+                  <ArrowUpRight size={16} className="text-slate-400" />
                 </div>
 
                 <p className="mt-4 text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -233,7 +401,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                 </p>
 
                 <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
-                  {data?.totalProperties ?? 0}
+                  {data.totalProperties}
                 </p>
               </div>
 
@@ -244,10 +412,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                     <CreditCard size={17} />
                   </div>
 
-                  <ArrowUpRight
-                    size={16}
-                    className="text-slate-400"
-                  />
+                  <ArrowUpRight size={16} className="text-slate-400" />
                 </div>
 
                 <p className="mt-4 text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -255,15 +420,14 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                 </p>
 
                 <p className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
-                  {data?.completedPayments ?? 0}
+                  {data.completedPayments}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* ================= REVENUE CARD ================= */}
+          {/* Revenue Card */}
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-600 p-6 text-white shadow-xl shadow-cyan-500/20">
-            {/* Decorative circles */}
             <div className="absolute -right-12 -top-12 size-36 rounded-full bg-white/10" />
             <div className="absolute -bottom-16 -left-10 size-40 rounded-full bg-white/10" />
 
@@ -274,9 +438,7 @@ const AdminStats = ({ data }: AdminStatsProps) => {
                     Financial Summary
                   </p>
 
-                  <h3 className="mt-1 text-lg font-bold">
-                    Platform Revenue
-                  </h3>
+                  <h3 className="mt-1 text-lg font-bold">Platform Revenue</h3>
                 </div>
 
                 <div className="flex size-11 items-center justify-center rounded-xl bg-white/15 backdrop-blur-sm">
@@ -285,24 +447,20 @@ const AdminStats = ({ data }: AdminStatsProps) => {
               </div>
 
               <div className="mt-8">
-                <p className="text-sm text-cyan-100">
-                  Total Revenue
-                </p>
+                <p className="text-sm text-cyan-100">Total Revenue</p>
 
                 <p className="mt-1 text-3xl font-bold tracking-tight sm:text-4xl">
-                  ৳{Number(data?.totalRevenue ?? 0).toLocaleString()}
+                  ৳{Number(data.totalRevenue).toLocaleString()}
                 </p>
               </div>
 
               <div className="mt-8 border-t border-white/20 pt-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-cyan-100">
-                      Completed Payments
-                    </p>
+                    <p className="text-xs text-cyan-100">Completed Payments</p>
 
                     <p className="mt-1 text-xl font-bold">
-                      {data?.completedPayments ?? 0}
+                      {data.completedPayments}
                     </p>
                   </div>
 

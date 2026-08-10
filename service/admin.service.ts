@@ -5,9 +5,12 @@ import type {
   GetAllUsersResponse,
 } from "@/types/admin.types";
 
-export const getAdminDashboardStats =async (): Promise<AdminDashboardStats> => {
+export const getAdminDashboardStats =
+  async (): Promise<AdminDashboardStats> => {
     const response = await fetch("/api/admin/dashboard", {
+      method: "GET",
       credentials: "include",
+      cache: "no-store",
     });
 
     if (!response.ok) {
@@ -32,6 +35,7 @@ export const getAllUsers = async (): Promise<AdminUser[]> => {
 
   return result.data;
 };
+
 export const updateUserRole = async (
   userId: string,
   role: "TENANT" | "LANDLORD" | "ADMIN",
@@ -58,7 +62,7 @@ export const updateUserRole = async (
 
 export const updateUserStatus = async (
   userId: string,
-  status: "ACTIVE" | "BANNED"
+  status: "ACTIVE" | "BANNED",
 ) => {
   const response = await fetch(`/api/admin/users/${userId}`, {
     method: "PUT",
@@ -75,7 +79,7 @@ export const updateUserStatus = async (
     const error = await response.json().catch(() => null);
 
     throw new Error(
-      error?.message || "Failed to update user status"
+      error?.message || "Failed to update user status",
     );
   }
 
@@ -83,5 +87,3 @@ export const updateUserStatus = async (
 
   return result.data;
 };
-
-

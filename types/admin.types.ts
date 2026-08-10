@@ -2,8 +2,28 @@ export interface AdminDashboardStats {
   totalUsers: number;
   totalProperties: number;
   totalRentalRequests: number;
-  totalRevenue: string;
+  totalRevenue: string | number;
   completedPayments: number;
+
+  monthlyRevenue: {
+    month: string;
+    revenue: number;
+  }[];
+
+  rentalRequests: {
+    pending: number;
+    approved: number;
+    active: number;
+    completed: number;
+    rejected: number;
+  };
+}
+
+export interface AdminDashboardResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: AdminDashboardStats;
 }
 
 export interface AdminUser {
@@ -16,13 +36,6 @@ export interface AdminUser {
   image: string | null;
   address: string | null;
   createdAt: string;
-}
-
-export interface AdminDashboardResponse {
-  success: boolean;
-  statusCode: number;
-  message: string;
-  data: AdminDashboardStats;
 }
 
 export interface GetAllUsersResponse {

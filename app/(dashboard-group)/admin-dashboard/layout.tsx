@@ -21,7 +21,7 @@ import { logOut } from "@/service/logOut";
 
 const menuItems = [
   {
-    label: "Admin Dashboard",
+    label: "Overview",
     href: "/admin-dashboard",
     icon: LayoutDashboard,
   },

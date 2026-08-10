@@ -9,8 +9,6 @@ import AdminStats from "@/components/AdminDashboard/AdminStats";
 import AdminDashboardSkeleton from "@/components/AdminDashboard/AdminDashboardSkeleton";
 import AdminDashboardError from "@/components/AdminDashboard/AdminDashboardError";
 
-
-
 const AdminDashboard = () => {
   const {
     data,
@@ -30,18 +28,16 @@ const AdminDashboard = () => {
     return <AdminDashboardError onRetry={() => refetch()} />;
   }
 
+
+  if (!data) {
+    return <AdminDashboardSkeleton />;
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <main className="min-w-0 flex-1">
-        <AdminNavbar />
+    <div className="min-h-screen bg-background">
+      <AdminNavbar />
 
-        <AdminStats data={data} />
-
-        <main className="bg-background p-4 sm:p-6 lg:p-8">
-          <div className="mx-auto max-w-7xl">
-          </div>
-        </main>
-      </main>
+      <AdminStats data={data} />
     </div>
   );
 };
