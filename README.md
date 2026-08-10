@@ -2,7 +2,7 @@
 
 RentNest is a modern **Full Stack Rental Marketplace** designed to connect **Tenants** and **Landlords** through a secure, user-friendly platform. Users can browse properties, submit rental requests, make payments, leave reviews, and manage their rental activities.
 
-The platform also includes a powerful **Admin Dashboard** for managing users, properties, categories, rental requests, payments, and overall platform activity.
+The platform also includes a powerful **Admin Dashboard** for managing users, properties, categories, rental requests, payments, revenue, and overall platform activity.
 
 ---
 
@@ -15,13 +15,14 @@ https://rent-nest-frontend-xi.vercel.app/
 ### Backend API
 
 https://rent-nest-backend-fiy9.onrender.com/
-### Backend GitHb Link
+
+### Backend GitHub
 
 https://github.com/chayon-chandra-sarker/Rent-Nest-Backend-
 
 ---
 
-## 📌 Project Overview
+# 📌 Project Overview
 
 RentNest provides a complete rental management ecosystem with three primary roles:
 
@@ -63,6 +64,9 @@ Landlords can:
 Admins can:
 
 * View dashboard statistics
+* Monitor platform revenue
+* View monthly revenue analytics
+* Monitor rental request analytics
 * Manage users
 * Manage user roles
 * Manage user status
@@ -70,7 +74,6 @@ Admins can:
 * Manage categories
 * Manage rental requests
 * Monitor payments
-* View platform revenue
 * Manage the overall platform
 
 ---
@@ -81,6 +84,7 @@ Admins can:
 
 * User registration
 * User login
+* Google authentication
 * Secure authentication
 * Access token & refresh token
 * HTTP-only cookie based authentication
@@ -122,11 +126,11 @@ Users can discover properties through:
 
 ---
 
-## 📝 Rental Request System
+# 📝 Rental Request System
 
 Tenants can request properties from landlords.
 
-Rental workflow:
+### Rental Workflow
 
 ```text
 Tenant
@@ -142,9 +146,21 @@ Accept / Reject
 Rental Status Updated
 ```
 
+### Rental Statuses
+
+RentNest supports the following rental request statuses:
+
+```text
+PENDING
+APPROVED
+ACTIVE
+COMPLETED
+REJECTED
+```
+
 ---
 
-## 💳 Payment System
+# 💳 Payment System
 
 RentNest integrates **Stripe** for secure online payments.
 
@@ -157,8 +173,9 @@ Features include:
 * Landlord payment history
 * Completed payment tracking
 * Revenue calculation
+* Monthly revenue analytics
 
-Payment statuses include:
+### Payment Statuses
 
 ```text
 PENDING
@@ -169,7 +186,7 @@ CANCELLED
 
 ---
 
-## ⭐ Review System
+# ⭐ Review System
 
 Tenants can submit reviews for rental properties.
 
@@ -183,11 +200,11 @@ Review functionality includes:
 
 ---
 
-## 🛡️ Admin Dashboard
+# 🛡️ Admin Dashboard
 
 The Admin Dashboard provides a centralized platform management system.
 
-### Dashboard Statistics
+## 📊 Dashboard Statistics
 
 Admin can monitor:
 
@@ -197,7 +214,68 @@ Admin can monitor:
 * Total revenue
 * Completed payments
 
-### Admin Management
+---
+
+## 💰 Financial Analytics
+
+### Revenue Overview
+
+The Admin Dashboard provides a **Monthly Revenue Line Chart** based on completed payments.
+
+Example:
+
+```text
+Monthly Revenue
+       📈
+       │
+৳65K   │              ●
+       │
+       │
+       └──────────────────
+          Aug
+```
+
+Revenue is calculated from payments with:
+
+```text
+Payment Status = COMPLETED
+```
+
+and valid:
+
+```text
+paidAt
+```
+
+---
+
+## 📈 Rental Request Analytics
+
+The Admin Dashboard also provides a **Rental Request Bar Chart** showing the current status of rental requests.
+
+Supported statuses:
+
+```text
+PENDING
+APPROVED
+ACTIVE
+COMPLETED
+REJECTED
+```
+
+The dashboard displays:
+
+* 🟠 Pending requests
+* 🟢 Approved requests
+* 🔵 Active rentals
+* 🟣 Completed rentals
+* 🔴 Rejected requests
+
+This allows administrators to quickly understand the current rental activity across the platform.
+
+---
+
+## 👥 Admin Management
 
 Admin can manage:
 
@@ -208,6 +286,30 @@ Admin can manage:
 * Categories
 * Rental requests
 * Payments
+
+### User Management
+
+Admin can:
+
+* View all users
+* Update user roles
+* Activate users
+* Ban users
+
+Supported roles:
+
+```text
+TENANT
+LANDLORD
+ADMIN
+```
+
+Supported user statuses:
+
+```text
+ACTIVE
+BANNED
+```
 
 ---
 
@@ -221,6 +323,7 @@ Admin can manage:
 * Tailwind CSS
 * DaisyUI
 * TanStack Query
+* Recharts
 * Lucide React
 * Sonner
 * Framer Motion
@@ -263,7 +366,7 @@ Admin can manage:
                                │
                     ┌──────────▼───────────┐
                     │      Express.js      │
-                    │       Backend       │
+                    │       Backend        │
                     └──────────┬───────────┘
                                │
                  ┌─────────────┼─────────────┐
@@ -436,6 +539,7 @@ RentNest implements several security mechanisms:
 * Server-side authorization checks
 * Environment variables for sensitive credentials
 
+---
 
 # 🚀 Installation & Setup
 
@@ -453,7 +557,7 @@ Install dependencies:
 npm install
 ```
 
-or
+or:
 
 ```bash
 pnpm install
@@ -482,9 +586,9 @@ http://localhost:3000
 ## 2. Clone the Backend
 
 ```bash
-git clone https://github.com/your-username/rent-nest-backend.git
+git clone https://github.com/chayon-chandra-sarker/Rent-Nest-Backend-
 
-cd rent-nest-backend
+cd Rent-Nest-Backend-
 ```
 
 Install dependencies:
@@ -493,7 +597,7 @@ Install dependencies:
 npm install
 ```
 
-or
+or:
 
 ```bash
 pnpm install
@@ -576,18 +680,10 @@ Payment Successful
    ↓
 Payment Status = COMPLETED
    ↓
+Revenue Analytics Updated
+   ↓
 Landlord Payment History Updated
 ```
-
----
-
-# 👥 User Roles
-
-| Role     | Permissions                                           |
-| -------- | ----------------------------------------------------- |
-| Tenant   | Browse properties, rental requests, payments, reviews |
-| Landlord | Manage properties, rental requests and payments       |
-| Admin    | Full platform management                              |
 
 ---
 
@@ -597,12 +693,45 @@ Landlord Payment History Updated
 Admin Dashboard
 │
 ├── Dashboard
+│   ├── Total Users
+│   ├── Total Properties
+│   ├── Rental Requests
+│   ├── Total Revenue
+│   ├── Completed Payments
+│   ├── Monthly Revenue Chart
+│   └── Rental Request Status Chart
+│
 ├── Users
 ├── Properties
 ├── Categories
 ├── Rentals
 ├── Payments
 └── Settings
+```
+
+---
+
+# 📈 Admin Analytics Architecture
+
+```text
+                    Admin Dashboard
+                           │
+            ┌──────────────┴──────────────┐
+            │                             │
+            ▼                             ▼
+     Financial Analytics          Rental Analytics
+            │                             │
+            ▼                             ▼
+     Monthly Revenue              Rental Requests
+            │                             │
+            ▼                    ┌────────┼────────┐
+     Completed Payments           │        │        │
+                                 ▼        ▼        ▼
+                              Pending  Approved  Active
+                                           │
+                                    ┌──────┴──────┐
+                                    ▼             ▼
+                               Completed      Rejected
 ```
 
 ---
@@ -698,6 +827,10 @@ During deployment, the frontend and backend were hosted on different domains. CO
 
 Implemented access token and refresh token based authentication with secure cookie handling and protected routes.
 
+### Google Authentication
+
+Google authentication was integrated into the authentication system to provide an additional login option for users.
+
 ### Role-Based Access
 
 Different permissions were implemented for Tenant, Landlord and Admin users.
@@ -710,9 +843,31 @@ Landlords can only update or delete properties that belong to them.
 
 Stripe was integrated to process rental payments and track payment status.
 
+### Revenue Analytics
+
+Completed payments are aggregated to calculate total platform revenue and monthly revenue for the Admin Dashboard.
+
+### Rental Analytics
+
+Rental requests are grouped by their current status:
+
+```text
+PENDING
+APPROVED
+ACTIVE
+COMPLETED
+REJECTED
+```
+
+These statistics are displayed through an Admin Dashboard Bar Chart.
+
 ### Server & Client Components
 
 Next.js App Router server/client boundaries were handled carefully to separate server-side cookie operations from client-side UI logic.
+
+### Dashboard Data Fetching
+
+TanStack Query is used to fetch and manage Admin Dashboard statistics on the frontend, while the Next.js API route securely forwards the authenticated request to the backend.
 
 ---
 
@@ -736,7 +891,6 @@ Possible future improvements include:
 * CI/CD pipeline
 
 ---
-
 
 # 🤝 Contributing
 
@@ -791,16 +945,16 @@ I am passionate about building modern, scalable and user-friendly web applicatio
 * REST API
 * Authentication & Authorization
 * Payment Integration
+* Dashboard & Data Visualization
 
 ---
 
-## 🔗 Connect With Me
+# 🔗 Connect With Me
 
 * Portfolio: https://chayonsarker.vercel.app/
 * GitHub: https://github.com/chayon-chandra-sarker
 * LinkedIn: https://www.linkedin.com/in/chayon11/
 * Facebook: https://www.facebook.com/chayonsarkerns
-
 
 ---
 
@@ -809,3 +963,6 @@ I am passionate about building modern, scalable and user-friendly web applicatio
 If you find this project useful or interesting, consider giving the repository a ⭐ on GitHub.
 
 Thank you for checking out **RentNest**! 🏠
+
+```
+```
