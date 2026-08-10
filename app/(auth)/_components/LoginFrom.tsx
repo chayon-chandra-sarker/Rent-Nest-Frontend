@@ -43,16 +43,10 @@ const LoginFrom = () => {
 
   // Google Login
   const handleGoogleLogin = async (credential: string) => {
-    console.log("🚀 GOOGLE SERVER ACTION STARTED");
+
 
     try {
       const result = await googleLoginAction(credential);
-
-      console.log(
-        "🚀 GOOGLE SERVER ACTION RESPONSE:",
-        result
-      );
-
       if (!result.success) {
         throw new Error(
           result.message || "Google login failed"
