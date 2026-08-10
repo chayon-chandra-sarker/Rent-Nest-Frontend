@@ -35,8 +35,17 @@ const NavLinks = ({
   onClick,
   mobile = false,
   isLoggedIn = false,
+  role,
 }: NavLinksProps) => {
   const pathname = usePathname();
+
+
+  const dashboardHref =
+    role === "ADMIN"
+      ? "/admin-dashboard"
+      : role === "LANDLORD"
+        ? "/land-lord-dashboard"
+        : "/dashboard";
 
   const links = isLoggedIn
     ? [
@@ -47,39 +56,63 @@ const NavLinks = ({
         },
         {
           label: "Dashboard",
-          href: "/dashboard",
+          href: dashboardHref,
         },
       ]
     : navLinks;
 
   // Active link check
-  const isLinkActive = (href: string) => {
-    // Profile route
-    if (href === "/profile") {
-      return (
-        pathname === "/profile" ||
-        pathname.endsWith("/dashboard/profile")
-      );
-    }
+const isLinkActive = (href: string) => {
+  // Home
+  if (href === "/") {
+    return pathname === "/";
+  }
 
-    // Dashboard route
-    if (href === "/dashboard") {
-      return (
-        pathname === "/dashboard" ||
-        (
-          pathname.startsWith("/dashboard/") &&
-          !pathname.endsWith("/profile")
-        )
-      );
-    }
-
-    // Other routes
+  // Profile
+  if (href === "/profile") {
     return (
-      pathname === href ||
-      pathname.startsWith(`${href}/`)
+      pathname === "/profile" ||
+      pathname === "/dashboard/profile" ||
+      pathname === "/admin-dashboard/profile" ||
+      pathname === "/land-lord-dashboard/profile"
     );
-  };
+  }
 
+  // Tenant Dashboard
+  if (href === "/dashboard") {
+    return (
+      pathname === "/dashboard" ||
+      (pathname.startsWith("/dashboard/") &&
+        !pathname.startsWith("/dashboard/profile"))
+    );
+  }
+
+  // Admin Dashboard
+  if (href === "/admin-dashboard") {
+    return (
+      pathname === "/admin-dashboard" ||
+      (pathname.startsWith("/admin-dashboard/") &&
+        !pathname.startsWith("/admin-dashboard/profile"))
+    );
+  }
+
+  // Landlord Dashboard
+  if (href === "/land-lord-dashboard") {
+    return (
+      pathname === "/land-lord-dashboard" ||
+      (pathname.startsWith("/land-lord-dashboard/") &&
+        !pathname.startsWith("/land-lord-dashboard/profile"))
+    );
+  }
+
+  // Other routes
+  return (
+    pathname === href ||
+    pathname.startsWith(`${href}/`)
+  );
+};
+
+  // Mobile navbar
   if (mobile) {
     return (
       <nav className="flex flex-col gap-1">
@@ -112,6 +145,7 @@ const NavLinks = ({
     );
   }
 
+  // Desktop navbar
   return (
     <nav className="flex items-center gap-1">
       {links.map((link) => {
