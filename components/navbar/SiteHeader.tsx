@@ -37,7 +37,6 @@ type NavbarProps = {
 export function SiteHeader({ user }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-
   const [updatedProfile, setUpdatedProfile] = useState<IUserData | null>(null);
 
   useEffect(() => {
@@ -67,7 +66,9 @@ export function SiteHeader({ user }: NavbarProps) {
 
   const profileImage = isLoggedIn ? effectiveUserData.image : null;
 
-  const profileName = isLoggedIn ? effectiveUserData.name : "Guest User";
+  const profileName = isLoggedIn
+    ? effectiveUserData.name
+    : "Guest User";
 
   const profileEmail = isLoggedIn
     ? effectiveUserData.email
@@ -95,56 +96,116 @@ export function SiteHeader({ user }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      {/* Full-width navbar background */}
+      {/* Navbar */}
       <div className="w-full border-b border-border/60 bg-background/95 backdrop-blur-xl">
-        <div className="flex h-[80px] w-full items-center justify-between px-5 sm:px-8 lg:px-12 xl:px-16">
-          {/* Logo */}
+        <div
+          className="
+            mx-auto flex h-16 w-full items-center
+            justify-between gap-3
+            px-4
+            sm:h-[72px] sm:px-6
+            md:px-8
+            lg:h-20 lg:px-10
+            xl:px-12
+            2xl:px-16
+          "
+        >
+          {/* ================= LOGO ================= */}
           <Link
             href="/"
             onClick={closeMenus}
-            className="group flex items-center gap-3"
+            className="
+              group flex shrink-0 items-center gap-2
+              sm:gap-3
+            "
           >
-            <span className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-[0_8px_25px_rgba(0,220,229,0.22)] transition-all duration-300 group-hover:scale-105">
-              <Home className="size-5" />
+            <span
+              className="
+                flex size-9 items-center justify-center
+                rounded-xl bg-primary
+                text-primary-foreground
+                shadow-[0_8px_25px_rgba(0,220,229,0.22)]
+                transition-all duration-300
+                group-hover:scale-105
+                sm:size-10 sm:rounded-xl
+                lg:size-11 lg:rounded-2xl
+              "
+            >
+              <Home className="size-4 sm:size-5" />
             </span>
 
-            <span className="text-[22px] font-extrabold tracking-tight text-foreground">
+            <span
+              className="
+                text-lg font-extrabold tracking-tight
+                text-foreground
+                sm:text-xl
+                lg:text-[22px]
+              "
+            >
               RentNest
             </span>
           </Link>
 
-          {/* Navigation */}
-          <NavLinks isLoggedIn={isLoggedIn} role={profileRole} />
+          {/* ================= DESKTOP NAVIGATION ================= */}
+          <div className="hidden md:flex md:flex-1 md:justify-center">
+            <NavLinks
+              isLoggedIn={isLoggedIn}
+              role={profileRole}
+            />
+          </div>
 
-          {/* Right actions */}
-          <div className="flex items-center gap-2.5">
+          {/* ================= RIGHT ACTIONS ================= */}
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 lg:gap-2.5">
+            {/* Theme */}
             <ThemeToggle />
 
-            <ProfileMenu
-              isLoggedIn={isLoggedIn}
-              profileName={profileName}
-              profileEmail={profileEmail}
-              profileRole={profileRole}
-              profileImage={profileImage}
-              isOpen={isProfileOpen}
-              onToggle={() => setIsProfileOpen((value) => !value)}
-              onClose={() => setIsProfileOpen(false)}
-              onLogout={handleLogout}
-            />
+            {/* Profile */}
+            <div className="hidden sm:block">
+              <ProfileMenu
+                isLoggedIn={isLoggedIn}
+                profileName={profileName}
+                profileEmail={profileEmail}
+                profileRole={profileRole}
+                profileImage={profileImage}
+                isOpen={isProfileOpen}
+                onToggle={() =>
+                  setIsProfileOpen((value) => !value)
+                }
+                onClose={() => setIsProfileOpen(false)}
+                onLogout={handleLogout}
+              />
+            </div>
 
+            {/* Mobile Menu Button */}
             <button
               type="button"
               onClick={toggleMobileMenu}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
-              className="inline-flex size-11 items-center justify-center rounded-xl border border-border/70 bg-background text-foreground transition-all duration-300 hover:border-primary/40 hover:bg-primary/5 md:hidden"
+              className="
+                inline-flex size-9 items-center justify-center
+                rounded-lg
+                border border-border/70
+                bg-background
+                text-foreground
+                transition-all duration-300
+                hover:border-primary/40
+                hover:bg-primary/5
+                sm:size-10 sm:rounded-xl
+                md:hidden
+              "
             >
-              {open ? <X className="size-5" /> : <Menu className="size-5" />}
+              {open ? (
+                <X className="size-4 sm:size-5" />
+              ) : (
+                <Menu className="size-4 sm:size-5" />
+              )}
             </button>
           </div>
         </div>
       </div>
 
+      {/* ================= MOBILE MENU ================= */}
       <MobileMenu
         open={open}
         isProfileOpen={isProfileOpen}
@@ -153,7 +214,9 @@ export function SiteHeader({ user }: NavbarProps) {
         profileEmail={profileEmail}
         profileRole={profileRole}
         profileImage={profileImage}
-        onProfileToggle={() => setIsProfileOpen((value) => !value)}
+        onProfileToggle={() =>
+          setIsProfileOpen((value) => !value)
+        }
         onClose={closeMenus}
         onLogout={handleLogout}
       />
